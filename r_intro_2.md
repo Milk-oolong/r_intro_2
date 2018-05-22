@@ -99,6 +99,8 @@ How to avoid this course?
 
 - объединение диаграмм в одну
 https://github.com/thomasp85/patchwork
+- подписи на графике
+https://github.com/slowkow/ggrepel
 
 массовые операции:
 - ln от двадцати переменных
