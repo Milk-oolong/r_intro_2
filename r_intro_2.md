@@ -160,6 +160,7 @@ https://github.com/kassambara/factoextra
 
 - IV
 - стащить из какой-нибудь книжки пример на IV с данными и разобрать
+http://eclr.humanities.manchester.ac.uk/index.php/IV_in_R
 
 ## Семинар 6. Rmd
 
