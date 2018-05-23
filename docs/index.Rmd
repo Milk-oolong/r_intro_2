@@ -1,23 +1,21 @@
 ---
-title: "Введение в R"
+title: "Введение в R. Весна-лето 2018."
 output: html_document
 lang: ru-RU
 ---
 
-## Семинары:
-
 * Семинар 1, 24 мая. Загрузка и первое знакомство с данными. [Условия](https://bdemeshev.github.io/r_intro_2/seminar_010.html), [Rmd-файл](https://bdemeshev.github.io/r_intro_2/seminar_010.Rmd), решения.
 
 
-* Семинар 2, 28 мая.
-* Семинар 3, 31 мая.
-* Семинар 4, 4 июня.
-* Семинар 5, 7 июня.  
+* Семинар 2, 28 мая. Обработка данных. 
+* Семинар 3, 31 мая. Кластерный анализ.
+* Семинар 4, 4 июня. Факторный анализ.
+* Семинар 5, 7 июня.  Множественная регрессия.
 * !11 июня занятий не будет!
-* Семинар 6, 14 июня.
-* Семинар 7, 18 июня.
-* Семинар 8, 25 июня. 
-* Семинар 9, 28 июня.
+* Семинар 6, 14 июня. Маркдаун и красивое представление результатов.
+* Семинар 7, 18 июня. Логистическая регрессия и классификация.
+* Семинар 8, 25 июня. Кросс-валидация.
+* Семинар 9, 28 июня. Разное и ответы на вопросы :)
 
 
 
@@ -31,18 +29,27 @@ lang: ru-RU
 
 ## Установка софта:
 
+Перед первым занятием установите:
 
 * [R + Rstudio](http://bdemeshev.github.io/installation/r/R_installation.html)
+
+<!--
+это мы скроем, чтобы народ не пугался
 * [stan / rstan](http://bdemeshev.github.io/installation/r_stan/r_stan_installation.html)
 * [Atom](https://atom.io/)
 * [Texlive](https://www.tug.org/texlive/)
 * [Anaconda](https://www.continuum.io/downloads)
+-->
+
+
 
 ## Данные
 
+
+<!--
 * [Покемоны](https://github.com/bdemeshev/r_socio_hse/raw/master/datasets/pokemon.csv)
 * [Advertising](http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv)
-
+-->
 
 ## Материалы
 
