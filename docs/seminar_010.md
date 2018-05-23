@@ -18,8 +18,26 @@ editor_options:
 
 Подключаем пакет `tidyverse`!
 
-```{r}
+
+```r
 library(tidyverse)
+```
+
+```
+## ── Attaching packages ──────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+```
+
+```
+## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
+## ✔ tidyr   0.8.0     ✔ stringr 1.3.1
+## ✔ readr   1.1.1     ✔ forcats 0.3.0
+```
+
+```
+## ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
 ```
 
 * Упражнение 1. 
@@ -27,7 +45,8 @@ library(tidyverse)
 Подключите пакеты rio, 
 Не забудьте раскомментировать строки, убрав решетку `#`.
 
-```{r}
+
+```r
 # library(...)
 # library(...)
 ```
@@ -40,7 +59,8 @@ library(tidyverse)
 Также разумно посмотреть на первые строки набора данных командой `head()` 
 и на последние командой `tail()`.
 
-```{r}
+
+```r
 # some <- import("здесь какой-то .sav")
 # glimpse(some)
 # head(some)
@@ -57,7 +77,8 @@ library(tidyverse)
 - Сколько переменных в наборе данных?
 - Сколько наблюдений?
 
-```{r}
+
+```r
 # boom <- ...
 # glimpse(boom)
 # head(...)
@@ -92,7 +113,3 @@ library(tidyverse)
 * [jasp](https://jasp-stats.org/). Альтернатива spss. Байесовский подход сразу!
 * [radiant](https://radiant-rstats.github.io/docs/). Довесок к R, позволяющий работать мышкой и превратить результат в набор команд R.
 * [OpenRefine](http://openrefine.org/). Мощная чистка данных.
-
-# Домашнее задание
-
-
