@@ -6,7 +6,7 @@ lang: ru-RU
 
 ## Семинары:
 
-* Семинар 1, 24 мая. Загрузка и первое знакомство с данными. [Условия](https://bdemeshev.github.io/seminar_010.html), [Rmd-файл](https://bdemeshev.github.io/seminar_010.Rmd), решения.
+* Семинар 1, 24 мая. Загрузка и первое знакомство с данными. [Условия](https://bdemeshev.github.io/r_intro_2/seminar_010.html), [Rmd-файл](https://bdemeshev.github.io/r_intro_2/seminar_010.Rmd), решения.
 
 
 * Семинар 2, 28 мая.
