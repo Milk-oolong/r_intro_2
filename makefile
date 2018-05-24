@@ -3,8 +3,8 @@ all: archives htmls
 archives: archives/sem_010.zip
 htmls: docs/seminar_010.html docs/hw_010.html
 
-archives/sem_010.zip: docs/seminar_010.Rmd data/housing.wf1 data/rus_utf8.csv data/rus_cp1251.csv
-	zip archives/sem_010.zip docs/seminar_010.Rmd data/housing.wf1 data/rus_utf8.csv data/rus_cp1251.csv
+archives/sem_010.zip: docs/seminar_010.Rmd data/housing.wf1 data/housing.txt data/rus_utf8.csv data/rus_cp1251.csv data/cola.dta data/manipulate.sav data/cereal.csv docs/hw_010.Rmd
+	zip archives/sem_010.zip docs/seminar_010.Rmd data/housing.wf1 data/housing.txt data/rus_utf8.csv data/rus_cp1251.csv data/cola.dta data/manipulate.sav data/cereal.csv docs/hw_010.Rmd
 
 docs/seminar_010.html: docs/seminar_010.Rmd
 	cp data/*.* docs/
