@@ -1,6 +1,6 @@
 ---
-title: "Семинар 1. Первый раз в первый класс!"
-date: "May 22, 2018"
+title: 'Семинар 1. Первый раз в первый класс!'
+date: 'May 22, 2018'
 output:
   html_document:
     keep_md: yes
@@ -60,7 +60,7 @@ library(tidyverse)
 и на последние командой `tail()`.
 
 ```{r}
-some <- import("manipulate.sav")
+some <- import('manipulate.sav')
 glimpse(some)
 head(some)
 tail(some)
@@ -89,7 +89,7 @@ tail(some)
 
 ```{r}
 library(hexView) # подключаем специальный пакет для чтения данных eviews
-data <- readEViews("housing.wf1")
+data <- readEViews('housing.wf1')
 glimpse(housing)
 ```
 
@@ -181,7 +181,58 @@ create_report(diamonds)
 
 # Возня с данными
 
-Тут сортировка/отбор и создание переменных/отбор наблюдений
+Отобрать наблюдения по нескольким критериям легко!
+
+Пример.
+
+- По каким критериям отобраны бриллианты?
+
+```{r}
+diamonds2 <- filter(diamonds, price > mean(price), carat < mean(carat))
+skim(diamonds2)
+```
+
+Упражнение XXX.
+
+Отберите бриллианты с длиной `x` больше 5 мм.
+- Чему равна их средняя цена?
+
+```{r}
+# diamonds3 <- filter(___, ___)
+skim(___)
+```
+
+Перейдём к созданию новых переменных!
+
+Пример.
+
+Мы добавим в набор данных логарифм цены каждого бриллианта.
+- Под каким названием добавлена переменная в набор данных?
+
+```{r}
+diamonds4 <- mutate(diamonds, lprice = log(price))
+skim(diamonds4)
+```
+
+Упражнение XXX.
+
+Добавьте в набор данных для каждого бриллианта стоимость одного карата.
+- Чему равна медианная стоимость одного карата?
+
+```{r}
+diamonds5 <- mutate(diamonds, carat_price = ___)
+skim(___)
+```
+
+
+Табличку с данными иногда приходится сортировать!
+
+Пример.
+
+Мы последовательно выполним два действия, сортировку и отбор самых верхних строк.
+
+
+
 
 # Россия - родина слонов!
 
@@ -198,17 +249,17 @@ create_report(diamonds)
 
 Проверьте, читаются ли эти файлы командой `import()`
 ```{r}
-data_utf <- import("rus_utf8.csv")
+data_utf <- import('rus_utf8.csv')
 glimpse(___)
-data_cp <- import("rus_cp1251.csv")
+data_cp <- import('rus_cp1251.csv')
 glimpse(___)
 ```
 
 Здесь на помощь приходят другие пакеты, например, функция `read_csv` из пакета `readr`:
 ```{r}
-data_cp2 <- read_csv("rus_cp1251.csv", locale = locale(encoding = "CP1251"))
+data_cp2 <- read_csv('rus_cp1251.csv', locale = locale(encoding = 'CP1251'))
 glimpse(___)
-data_utf2 <- read_csv("rus_utf8.csv", locale = locale(encoding = "UTF8"))
+data_utf2 <- read_csv('rus_utf8.csv', locale = locale(encoding = 'UTF8'))
 glimpse(___)
 ```
 
@@ -226,7 +277,7 @@ comma separated values.
 Экспортируем набор данных про бриллианты в `csv`:
 
 ```{r}
-export(diamonds, "diamonds.csv")
+export(diamonds, 'diamonds.csv')
 ```
 Теперь эти данные можно прочитать в большинстве программ!
 Ровно таким же образом можно экспортировать и в другие форматы:
@@ -251,19 +302,19 @@ export(diamonds, "diamonds.csv")
 ```
 - Если хочется посмотреть, какие функции живут в пакете, например, в `skimr`:
 ```{r}
-help(package = "skimr")
+help(package = 'skimr')
 ```
-- Иногда помимо занудного описания каждой функции пакет содержит "виньетки".
+- Иногда помимо занудного описания каждой функции пакет содержит 'виньетки'.
 Виньетка - это пример использования пакета в бою.
 Виньетка не обязана описывать каждую функцию пакета, зато может содержать гораздо больше пояснений.
 
 Можно посмотреть, какие виньетки содержит пакет,
 ```{r}
-vignette(package = "skimr")
+vignette(package = 'skimr')
 ```
 А дальше, узнав название виньеток, прочитать любую из них, например,
 ```{r}
-vignette("Using_skimr")
+vignette('Using_skimr')
 ```
 
 - Если хочется посмотреть, какие пакеты используют люди моей специальности, то можно зайти на [cran task view](https://cran.r-project.org/web/views/)
