@@ -25,10 +25,12 @@ editor_options:
 
 * Пример.
 
-Подключаем пакет `tidyverse`!
+Подключаем пакет `tidyverse`, `rio` и `skimr`!
 
 ```{r}
 library(tidyverse)
+library(rio)
+library(skimr)
 ```
 
 Пакет `tidyverse` - это коллекция из множества пакетов. Например, в `tidyverse` входят:
@@ -36,10 +38,17 @@ library(tidyverse)
   - `ggplot2` для построения графиков
   - `lubridate` для работы с датами во временных рядах
 
+А два других:
+  - `rio` импортирует и экспортирует данные практически во все известные форматы;
+  - `skimr` считает самые разнообразные описательные статистики, которые только можно представить.
+
+
+
+Если при подключении пакета возникает ошибка (Error), то скорее всего пакет не установлен и его нужно установить через меню `Tools` - `Install packages`.
 
 * Упражнение 1.
 
-Подключите пакеты `rio`, `skimr`.
+Подключите пакеты `lattice` и `DataExplorer`.
 Не забудьте раскомментировать строки, убрав решетку `#`.
 
 ```{r}
@@ -48,8 +57,8 @@ library(tidyverse)
 ```
 
 Что умеют эти пакеты?
-  - `rio` импортирует и экспортирует данные практически во все известные форматы;
-  - `skimr` считает самые разнообразные описательные статистики, которые только можно представить.
+  - `lattice` пригодится нам для графиков
+  - `DataExplorer` для быстрого автоматического графического анализа
 
 * Пример. Загружаем данные из spss
 
@@ -89,7 +98,7 @@ tail(some)
 
 ```{r}
 library(hexView) # подключаем специальный пакет для чтения данных eviews
-data <- readEViews('housing.wf1')
+housing <- readEViews('housing.wf1')
 glimpse(housing)
 ```
 
@@ -199,7 +208,7 @@ skim(diamonds2)
 
 ```{r}
 # diamonds3 <- filter(___, ___)
-skim(___)
+# skim(___)
 ```
 
 Перейдём к созданию новых переменных!
@@ -220,8 +229,8 @@ skim(diamonds4)
 - Чему равна медианная стоимость одного карата?
 
 ```{r}
-diamonds5 <- mutate(diamonds, carat_price = ___)
-skim(___)
+# diamonds5 <- mutate(diamonds, carat_price = ___)
+# skim(___)
 ```
 
 
@@ -241,8 +250,8 @@ diamonds6
 Отсортируйте бриллианты по массе и отберите самые нижние пять строк.
 
 ```{r}
-diamonds7 <- arrange(___, ___) %>% ___(5)
-diamonds7
+# diamonds7 <- arrange(___, ___) %>% ___(5)
+# diamonds7
 ```
 
 
@@ -261,22 +270,21 @@ diamonds7
 
 Проверьте, читаются ли эти файлы командой `import()`
 ```{r}
-data_utf <- import('rus_utf8.csv')
-glimpse(___)
-data_cp <- import('rus_cp1251.csv')
-glimpse(___)
+# data_utf <- import('rus_utf8.csv')
+# glimpse(___)
+# data_cp <- import('rus_cp1251.csv')
+# glimpse(___)
 ```
 - В каком случае русские буквы читаются без кракозябр?
 
 Здесь на помощь приходят другие пакеты, например, функция `read_csv` из пакета `readr`:
 ```{r}
-data_cp2 <- read_csv('rus_cp1251.csv', locale = locale(encoding = 'CP1251'))
-glimpse(___)
-data_utf2 <- read_csv('rus_utf8.csv', locale = locale(encoding = 'UTF8'))
-glimpse(___)
+# data_cp2 <- read_csv('rus_cp1251.csv', locale = locale(encoding = 'CP1251'))
+# glimpse(___)
+# data_utf2 <- read_csv('rus_utf8.csv', locale = locale(encoding = 'UTF8'))
+# glimpse(___)
 ```
 
-Решаем проблемы с загрузкой источников с разной кодировкой
 
 # Не пропадёт наш скорбный труд :)
 

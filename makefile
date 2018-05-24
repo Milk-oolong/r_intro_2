@@ -8,7 +8,7 @@ archives/sem_010.zip: docs/seminar_010.Rmd data/housing.wf1 data/rus_utf8.csv da
 
 docs/seminar_010.html: docs/seminar_010.Rmd
 	cp data/*.* docs/
-	Rscript -e "knitr::knit2html('docs/seminar_010.Rmd')"
+	Rscript -e "rmarkdown::render('docs/seminar_010.Rmd')"
 	-rm docs/*.wf1
 	-rm docs/*.xlsx
 	-rm docs/*.txt
@@ -17,4 +17,4 @@ docs/seminar_010.html: docs/seminar_010.Rmd
 	-rm docs/*.dta
 
 docs/hw_010.html: docs/hw_010.Rmd
-	Rscript -e "knitr::knit2html('docs/hw_010.Rmd')"
+	Rscript -e "rmarkdown::render('docs/hw_010.Rmd')"
