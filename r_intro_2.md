@@ -12,7 +12,7 @@ https://bdemeshev.github.io/r_socio_hse/
 - сначала комментарии в Rmd более подбробные, потом менее :)
 - ссылки на _конкретные_ более подробные материалы по теме: на основной странице!
 
-
+- после library() обязательно `#` с комментарием
 
 чужие наборы данных:
 https://www.wiley.com/legacy/wileychi/verbeek2ed/datasets.html
