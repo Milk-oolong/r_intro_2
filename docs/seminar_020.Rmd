@@ -1,0 +1,16 @@
+---
+title: 'Семинар 2. '
+date: 'May 22, 2018'
+output:
+  html_document:
+    keep_md: no
+    number_sections: yes
+    toc: yes
+lang: ru-RU
+editor_options:
+  chunk_output_type: console
+---
+
+# Что-то там
+
+Ура :)
