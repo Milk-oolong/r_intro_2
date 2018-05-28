@@ -164,7 +164,11 @@ https://github.com/kassambara/factoextra
 https://github.com/kassambara/factoextra
 - обсудитиь картинки
 
-- здесь начать git?
+- здесь начать git:
+  - новый проект
+  - структура папок data/ report/
+  - связь c github.com
+  - история правок
 
 ## Семинар 4. Факторный анализ
 
