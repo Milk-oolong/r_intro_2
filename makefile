@@ -1,14 +1,20 @@
 all: archives htmls
 
-archives: archives/sem_010.zip
+archives: archives/sem_010.zip archives/sem_020.zip
 htmls: docs/seminar_010.html docs/hw_010.html docs/seminar_020.html
 
 archives/sem_010.zip: docs/seminar_010.Rmd data/housing.wf1 data/housing.txt data/rus_utf8.csv data/rus_cp1251.csv data/cola.dta data/manipulate.sav data/cereal.csv docs/hw_010.Rmd
 	zip -j archives/sem_010.zip docs/seminar_010.Rmd data/housing.wf1 data/housing.txt data/rus_utf8.csv data/rus_cp1251.csv data/cola.dta data/manipulate.sav data/cereal.csv docs/hw_010.Rmd
+# option -j flattens folder structure!
+
+archives/sem_020.zip: docs/seminar_020.Rmd data/adult.rds data/gdp.xls
+	zip -j archives/sem_020.zip docs/seminar_020.Rmd data/adult.rds data/gdp.xls
+
 
 docs/seminar_010.html: docs/seminar_010.Rmd
 	cp data/*.* docs/
 	Rscript -e "rmarkdown::render('docs/seminar_010.Rmd')"
+	Rscript -e "rmarkdown::render('docs/seminar_010_solved.Rmd')"
 	-rm docs/*.wf1
 	-rm docs/*.xlsx
 	-rm docs/*.txt
@@ -26,6 +32,8 @@ docs/seminar_020.html: docs/seminar_020.Rmd
 	-rm docs/gdp.xls
 
 
-
 docs/hw_010.html: docs/hw_010.Rmd
+	cp data/cereal.csv docs/
 	Rscript -e "rmarkdown::render('docs/hw_010.Rmd')"
+	Rscript -e "rmarkdown::render('docs/hw_010_solutions.Rmd')"
+	-rm docs/cereal.csv

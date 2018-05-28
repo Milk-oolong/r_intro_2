@@ -4,10 +4,17 @@ output: html_document
 lang: ru-RU
 ---
 
-* Семинар 1, 24 мая. Загрузка и первое знакомство с данными. [Условия и данные](https://github.com/bdemeshev/r_intro_2/raw/master/archives/sem_010.zip), решения.
+* Семинар 1, 24 мая. Загрузка и первое знакомство с данными:
+  - [Условия и данные](https://github.com/bdemeshev/r_intro_2/raw/master/archives/sem_010.zip)
+  - [Решение семинара](http://bdemeshev.github.io/r_intro_2/seminar_010_solved.html)
+  - [Решение домашней работы](http://bdemeshev.github.io/r_intro_2/seminar_010_solved.html)
+  - [Дополнительная домашняя работа](http://bdemeshev.github.io/r_intro_2/help_010.Rmd) для новичков
 
+* Семинар 2, 28 мая. Первичный анализ данных
+  - [Условия и данные](https://github.com/bdemeshev/r_intro_2/raw/master/archives/sem_020.zip).
+  - Решение семинара
+  - Решение домашней работы
 
-* Семинар 2, 28 мая. Обработка данных. 
 * Семинар 3, 31 мая. Кластерный анализ.
 * Семинар 4, 4 июня. Факторный анализ.
 * Семинар 5, 7 июня.  Множественная регрессия.

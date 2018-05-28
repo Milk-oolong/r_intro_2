@@ -2,6 +2,7 @@
 title: "Короткое введение в R"
 date: "25 05 2018"
 output: html_document
+lang: ru-RU
 ---
 
 Калькулятор
