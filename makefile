@@ -37,3 +37,13 @@ docs/hw_010.html: docs/hw_010.Rmd
 	Rscript -e "rmarkdown::render('docs/hw_010.Rmd')"
 	Rscript -e "rmarkdown::render('docs/hw_010_solutions.Rmd')"
 	-rm docs/cereal.csv
+
+clean:
+	-rm docs/*.wf1
+	-rm docs/*.xlsx
+	-rm docs/*.xls
+	-rm docs/*.txt
+	-rm docs/*.csv
+	-rm docs/*.sav
+	-rm docs/*.dta
+	-rm docs/*.rds
