@@ -7,8 +7,8 @@ archives/sem_010.zip: docs/seminar_010.Rmd data/housing.wf1 data/housing.txt dat
 	zip -j archives/sem_010.zip docs/seminar_010.Rmd data/housing.wf1 data/housing.txt data/rus_utf8.csv data/rus_cp1251.csv data/cola.dta data/manipulate.sav data/cereal.csv docs/hw_010.Rmd
 # option -j flattens folder structure!
 
-archives/sem_020.zip: docs/seminar_020.Rmd data/adult.rds data/gdp.xls
-	zip -j archives/sem_020.zip docs/seminar_020.Rmd data/adult.rds data/gdp.xls
+archives/sem_020.zip: docs/seminar_020.Rmd data/adult.rds data/gdp.xls docs/hw_020.Rmd data/titanic.csv data/titanic_info.xlsx
+	zip -j archives/sem_020.zip docs/seminar_020.Rmd data/adult.rds data/gdp.xls docs/hw_020.Rmd data/titanic.csv data/titanic_info.xlsx
 
 
 docs/seminar_010.html: docs/seminar_010.Rmd
