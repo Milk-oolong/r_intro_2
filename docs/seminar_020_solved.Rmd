@@ -51,7 +51,7 @@ editor_options:
   - занимают меньше места в памяти
 
 Подключаем нужные пакеты и вперёд!
-```{r}
+```{r, echo=FALSE, message=FALSE}
 library(tidyverse) # обработка данных, графики...
 library(vcd) # мозаичные графики для качественных переменных
 library(skimr) # описательные статистики
@@ -84,8 +84,8 @@ table(diamonds2$color)
 Обратите внимание на то, какие названия пишутся в кавычках.
 
 ```{r}
-# diamonds3 <- mutate(diamonds, cut = fct_collapse(___, ___))
-# table(diamonds3$cut)
+diamonds3 <- mutate(diamonds, cut = fct_collapse(cut, Best = c('Premium', 'Ideal')))
+table(diamonds3$cut)
 ```
 
 
@@ -181,12 +181,12 @@ chisq.test(ctable)
 
 ```{r}
 dta <- Arthritis
-# ___
-# new_ctable <- table(___, ___, dnn = c('___', '___'))
-# new_ctable
-# mosaic(___, shade = ___, ___ = ___)
+skim(dta)
+new_ctable <- table(dta$Treatment, dta$Improved, dnn = c('Лечение', 'Улучшение'))
+new_ctable
+mosaic(new_ctable, shade = TRUE, legend = TRUE)
 
-# new_ctable %>% ___() # применяем к таблице тест на независимость
+new_ctable %>% chisq.test() # применяем к таблице тест на независимость
 ```
 
 ## Очень много качественных переменных
@@ -254,10 +254,10 @@ corrplot.mixed(cars_cor) # можно миксовать!
 Вся необходимая информация есть в справке!
 
 ```{r}
-# skim(___)
-# cmatrix <- cor(___, use = 'pairwise.complete.obs') # игнорируем пропущенные значения
-# cmatrix
-# corrplot(___, method = '___', type = '___')
+skim(airquality)
+cmatrix <- cor(airquality, use = 'pairwise.complete.obs') # игнорируем пропущенные значения
+cmatrix
+corrplot(cmatrix, method = 'ellipse', type = 'upper')
 ```
 
 # Группировка данных
@@ -279,10 +279,10 @@ report
 - отберите три группы с минимальной `med_price`:
 
 ```{r}
-# report2 <- group_by(diamonds, ___) %>%
-#  summarise(med_price = median(___), sd_price = sd(___), n_obs = n()) %>%
-#  top_n(3, ___)
-# report2
+report2 <- group_by(diamonds, cut) %>%
+  summarise(med_price = median(price), sd_price = sd(price), n_obs = n()) %>%
+  top_n(3, med_price)
+report2
 ```
 
 * Упражнение 8.
@@ -292,10 +292,10 @@ report
 - отсортируйте по возрастанию медианной массы
 
 ```{r}
-# report3 <- group_by(diamonds, ___) %>%
-#  summarise(med_price = ___, med_carat = ___, n_obs = ___) %>%
-#  arrange(___)
-# report3
+report3 <- group_by(diamonds, clarity) %>%
+  summarise(med_price = median(price), med_carat = median(carat), n_obs = n()) %>%
+  arrange(med_carat)
+report3
 ```
 
 # Грамматика графиков
@@ -349,25 +349,25 @@ ggplot(data = diamonds) +
   - форма `shape` - наличие ручной коробки передач, переменная `am`
 
 ```{r}
-# ggplot(data = mtcars) +
-#  geom_point(aes(x = ___, ___ = disp, ___ = ___)) +
-#  labs(x = 'Пробег в милях на галлон', y = 'Объём двигателя')
+ggplot(data = mtcars) +
+  geom_point(aes(x = mpg, y = disp, shape = factor(am))) +
+  labs(x = 'Пробег в милях на галлон', y = 'Объём двигателя')
 ```
 
 Добавьте к графику горизонтальную линию на уровне медианного объема двигателя
 
 ```{r}
-# ggplot(data = mtcars) +
-#  geom_point(aes(x = ___, ___ = disp, ___ = ___)) +
-#  geom_hline(aes(yintercept = median(___)))
-#  labs(x = 'Пробег в милях на галлон', y = 'Объём двигателя')
+ggplot(data = mtcars) +
+  geom_point(aes(x = mpg, y = disp, shape = factor(am))) +
+  geom_hline(aes(yintercept = median(disp)))
+  labs(x = 'Пробег в милях на галлон', y = 'Объём двигателя')
 ```
 
 Нарисуйте гистограмму пробега на одну милю `mpg`:
 ```{r}
-# ggplot(data = mtcars) +
-#  geom_histogram(aes(x = ___)) +
-#  labs(x = 'Пробег в милях на галлон', title = 'Няшный график :)')
+ggplot(data = mtcars) +
+  geom_histogram(aes(x = mpg)) +
+  labs(x = 'Пробег в милях на галлон', title = 'Няшный график :)')
 ```
 
 
@@ -472,9 +472,9 @@ mx
 Столбец `y` можно заполнить числами произвольно.
 
 ```{r}
-# my <- tibble(ID = c('A', 'C', 'D', 'F', 'E'),
-#             y = c(___))
-# my
+my <- tibble(ID = c('A', 'C', 'D', 'F', 'E'),
+             y = c(1, 2, 6, 7, -9))
+my
 ```
 
 Таблицы можно соединять! Существует четыре способа сделать это:
@@ -488,10 +488,10 @@ mx
 Экспериментируем!
 
 ```{r}
-# left_join(mx, my, by = 'ID')
-# right_join(mx, my, by = 'ID')
-# inner_join(mx, my, by = 'ID')
-# full_join(mx, my, by = 'ID')
+left_join(mx, my, by = 'ID')
+right_join(mx, my, by = 'ID')
+inner_join(mx, my, by = 'ID')
+full_join(mx, my, by = 'ID')
 ```
 
 - Сколько наблюдений получается в объединённой таблице в каждом случае?
@@ -502,25 +502,25 @@ mx
 
 - 'Бросьте взгляд' на обе таблицы. Какие столбцы совпадают?
 ```{r}
-# glimpse(___)
-# ___
+glimpse(flights)
+glimpse(weather)
 ```
 
-- Присоедините к таблице `flights` таблицу `weather` с помощью функции  `left_join()`.
+- Присоедините к таблице `flights` таблицу `flights` с помощью функции  `left_join()`.
 В качестве аргумента `by` используйте вектор из названий общих столбцов: `year`, `month`, `day`, `hour` и `origin`.
 - Сколько наблюдений в объединённой таблице?
 
 ```{r}
-# left <- left_join(___, ____, by = c('year', 'month', 'day', 'hour', 'origin'))
-# glimpse(___)
+left <- left_join(flights, weather, by = c('year', 'month', 'day', 'hour', 'origin'))
+glimpse(left)
 ```
 
 - Повторите соединение двух таблиц, но используя `inner_join()`. Сколько наблюдений в получившейся таблице?
 - В чём разница `left_join` и `inner_join`?
 
 ```{r}
-# inner <- inner_join(___, ___, ___)
-# ___
+inner <- inner_join(flights, weather, by =  c('year', 'month', 'day', 'hour', 'origin'))
+glimpse(inner)
 ```
 
 # Длинные и широкие таблицы
@@ -572,15 +572,15 @@ dcast(diamonds, cut ~ color, value.var = "price", fun.aggregate = mean)
 
 
 ```{r}
-# air_long <- melt(___, id = c('Month', 'Day')) # id оставлеет указанные столбцы
-# air_long
+air_long <- melt(airquality, id = c('Month', 'Day')) # id оставлеет указанные столбцы
+air_long
 ```
 
 А из получившейся длинной таблицы восстановите исходную!
 
 ```{r}
-# air_wide <- dcast(___, Day + Month ~ ___) # вместо пропуска должна быть переменная с несколькими значениями
-# air_wide
+air_wide <- dcast(air_long, Day + Month ~ variable) # вместо пропуска должна быть переменная с несколькими значениями
+air_wide
 ```
 
 
