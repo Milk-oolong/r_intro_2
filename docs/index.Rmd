@@ -14,7 +14,7 @@ lang: ru-RU
 * Семинар 2, 28 мая. Первичный анализ данных:
 
     - Условия и данные [sem_020.zip](https://github.com/bdemeshev/r_intro_2/raw/master/archives/sem_020.zip);
-    - Решение семинара;
+    - [Решение семинара](http://bdemeshev.github.io/r_intro_2/seminar_020_solved.html);
     - Решение домашней работы;
 
 * Семинар 3, 31 мая. Кластерный анализ.

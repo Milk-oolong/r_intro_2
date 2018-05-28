@@ -1,6 +1,6 @@
 ---
 title: 'Семинар 2. Таблицы сопряжённости, корреляции и манипуляции с данными'
-date: 'May 22, 2018'
+date: 'May 28, 2018'
 output:
   html_document:
     keep_md: no
@@ -349,8 +349,9 @@ ggplot(data = diamonds) +
   - форма `shape` - наличие ручной коробки передач, переменная `am`
 
 ```{r}
+mtcars <- mutate(mtcars, am = factor(am))
 ggplot(data = mtcars) +
-  geom_point(aes(x = mpg, y = disp, shape = factor(am))) +
+  geom_point(aes(x = mpg, y = disp, shape = am)) +
   labs(x = 'Пробег в милях на галлон', y = 'Объём двигателя')
 ```
 
@@ -358,7 +359,7 @@ ggplot(data = mtcars) +
 
 ```{r}
 ggplot(data = mtcars) +
-  geom_point(aes(x = mpg, y = disp, shape = factor(am))) +
+  geom_point(aes(x = mpg, y = disp, shape = am)) +
   geom_hline(aes(yintercept = median(disp)))
   labs(x = 'Пробег в милях на галлон', y = 'Объём двигателя')
 ```
@@ -395,8 +396,8 @@ mtcars2 <- mutate(mtcars, cyl = factor(cyl))
 
 
 ```{r}
-ggplot(data = mtcars2) +
-  geom_violin(aes(x = cyl, y = mpg)) +
+ggplot(data = mtcars, aes(x = cyl, y = mpg)) +
+  geom_violin() +
   labs(x = 'Цилиндры', y = 'Мощность', title = 'Машины')
 ```
 
