@@ -32,7 +32,7 @@ lang: ru-RU
 Место: Шаболовка 26, 4428. Приносите свои ноутбуки!!!
 
 
-* Таблица с [пожелалками и комментариями](docs.google.com/spreadsheets/d/15NOsoa23Cr56NzEi1AXf9ZmPHkCScq8cu35rf-selkk/edit)
+* Таблица с [пожелалками и комментариями](http://docs.google.com/spreadsheets/d/15NOsoa23Cr56NzEi1AXf9ZmPHkCScq8cu35rf-selkk/edit)
 * Предыдущая [реинкарнация курса](http://bdemeshev.github.io/r_socio_hse/)
 
 
