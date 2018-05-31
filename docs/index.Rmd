@@ -15,7 +15,7 @@ lang: ru-RU
 
     - Условия и данные [sem_020.zip](https://github.com/bdemeshev/r_intro_2/raw/master/archives/sem_020.zip);
     - [Решение семинара](http://bdemeshev.github.io/r_intro_2/seminar_020_solved.html);
-    - Решение домашней работы;
+    - [Решение домашней работы](http://bdemeshev.github.io/r_intro_2/hw_020_solutions.html);
 
 * Семинар 3, 31 мая. Кластерный анализ.
 * Семинар 4, 4 июня. Факторный анализ.
