@@ -38,16 +38,15 @@ lang: ru-RU
 Место: Шаболовка 26, 4428. Приносите свои ноутбуки!!!
 
 
+Полезности:
+
+* Перед первым занятием установите [R + Rstudio по инструкции](http://bdemeshev.github.io/installation/r/R_installation.html)
+
+* Подборка [русскоязычных ресурсов](https://github.com/bdemeshev/r_links)
 * Таблица с [пожелалками и комментариями](http://docs.google.com/spreadsheets/d/15NOsoa23Cr56NzEi1AXf9ZmPHkCScq8cu35rf-selkk/edit)
 * Предыдущая [реинкарнация курса](http://bdemeshev.github.io/r_socio_hse/)
 
 
-
-## Установка софта:
-
-Перед первым занятием установите:
-
-* [R + Rstudio](http://bdemeshev.github.io/installation/r/R_installation.html)
 
 <!--
 это мы скроем, чтобы народ не пугался
@@ -58,9 +57,9 @@ lang: ru-RU
 -->
 
 
-* Подборка [русскоязычных ресурсов](https://github.com/bdemeshev/r_links)
+
 
 
 
 -------
-Созданные  для данного курса материалы распространяются по лицензии [Creative Commons Attribution-NonCommercial-ShareAlike](http://creativecommons.org/licenses/by-nc-sa/3.0/deed.ru)
+Созданные для данного курса материалы распространяются по лицензии [Creative Commons Attribution-NonCommercial-ShareAlike](http://creativecommons.org/licenses/by-nc-sa/3.0/deed.ru)
