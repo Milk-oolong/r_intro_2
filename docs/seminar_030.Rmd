@@ -357,10 +357,6 @@ skim(typical_replaced)
 ```
 
 
-
-% операции с NA и простейшие алгоритмы заполнения удалении
-% нужен пакет с графиками для работы с NA (О)
-
 # Кластеризация k-means
 
 Для примера возьмём данные по потреблению протеинов Европе из книги [Practial Machine Learning Cookbook](https://github.com/PacktPublishing/Practical-Machine-Learning-Cookbook/blob/master/Chapter%2003/Data/Europenaprotein.csv).
@@ -389,7 +385,7 @@ x_i^* = (x_i - \bar x) / \hat \sigma_x,
 
 Отмасштабируем данные с помощью встроенной функции `scale()`.
 Поскольку она может работать только с числами, первый столбец `Country` ей передавать не нужно.
-Результат сохраним в таблице `df_stand`.
+Результат сохраним в таблице `protein_stand`.
 
 
 ```{r}
