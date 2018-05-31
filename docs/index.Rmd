@@ -20,7 +20,7 @@ lang: ru-RU
 * Семинар 3, 31 мая. Кластерный анализ.
 
     - Условия и данные [sem_030.zip](https://github.com/bdemeshev/r_intro_2/raw/master/archives/sem_030.zip);
-    - Решение семинара;
+    - [Решение семинара](http://bdemeshev.github.io/r_intro_2/seminar_030_solved.html);
     - Решение домашней работы;
 
 

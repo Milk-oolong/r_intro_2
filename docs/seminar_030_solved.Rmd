@@ -109,9 +109,9 @@ mx
 Столбец `y` можно заполнить числами произвольно.
 
 ```{r}
-# my <- tibble(ID = c('A', 'C', 'D', 'F', 'E'),
-#             y = c(___))
-# my
+my <- tibble(ID = c('A', 'C', 'D', 'F', 'E'),
+             y = c(1, 2, -3, 4, -5))
+my
 ```
 
 ### Матрицы
@@ -167,10 +167,10 @@ attributes(my_list)
 Экспериментируем!
 
 ```{r}
-# left_join(mx, my, by = 'ID')
-# right_join(mx, my, by = 'ID')
-# inner_join(mx, my, by = 'ID')
-# full_join(mx, my, by = 'ID')
+left_join(mx, my, by = 'ID')
+right_join(mx, my, by = 'ID')
+inner_join(mx, my, by = 'ID')
+full_join(mx, my, by = 'ID')
 ```
 
 - Сколько наблюдений получается в объединённой таблице в каждом случае?
@@ -181,8 +181,8 @@ attributes(my_list)
 
 - 'Бросьте взгляд' на обе таблицы. Какие столбцы совпадают?
 ```{r}
-# glimpse(___)
-# ___
+glimpse(flights)
+glimpse(weather)
 ```
 
 - Присоедините к таблице `flights` таблицу `weather` с помощью функции  `left_join()`.
@@ -190,16 +190,16 @@ attributes(my_list)
 - Сколько наблюдений в объединённой таблице?
 
 ```{r}
-# left <- left_join(___, ____, by = c('year', 'month', 'day', 'hour', 'origin'))
-# glimpse(___)
+left <- left_join(flights, weather, by = c('year', 'month', 'day', 'hour', 'origin'))
+glimpse(left)
 ```
 
 - Повторите соединение двух таблиц, но используя `inner_join()`. Сколько наблюдений в получившейся таблице?
 - В чём разница `left_join` и `inner_join`?
 
 ```{r}
-# inner <- inner_join(___, ___, ___)
-# ___
+inner <- inner_join(flights, weather, by = c('year', 'month', 'day', 'hour', 'origin'))
+glimpse(inner)
 ```
 
 # Длинные и широкие таблицы
@@ -262,8 +262,8 @@ diamonds_wide
 
 
 ```{r}
-# air_long <- gather(___, key = 'indicator', value = 'value', -Month, -___)
-# air_long
+air_long <- gather(airquality, key = 'indicator', value = 'value', -Month, -Day)
+air_long
 ```
 
 - Как называются столбцы в длинной таблице? Что в них находится?
@@ -271,8 +271,8 @@ diamonds_wide
 А из получившейся длинной таблицы восстановите исходную!
 
 ```{r}
-# air_wide <- spread(___, key = '___', value = 'value')
-# air_wide
+air_wide <- spread(air_long, key = 'indicator', value = 'value')
+air_wide
 ```
 
 
@@ -299,7 +299,7 @@ vis_miss(typical_data, cluster = TRUE)
 
 ```{r}
 skim(airquality)
-# vis_miss(___, cluster = ___)
+vis_miss(airquality, cluster = TRUE)
 ```
 
 - Какие признаки содержат пропущенные наблюдения?
@@ -349,13 +349,13 @@ skim(typical_replaced)
 - Проверьте, что всё получилось :)
 
 ```{r}
-# air_removed <- drop_na(___)
-# skim(___)
+air_removed <- drop_na(airquality)
+skim(air_removed)
 
-# air_replaced <- replace_na(data = ___,
-#  replace = list(Ozone = mean(airquality$___, na.rm = ___),
-#  Solar.R = median(___, na.rm = ___)))
-# skim(___)
+air_replaced <- replace_na(data = airquality,
+  replace = list(Ozone = mean(airquality$Ozone, na.rm = TRUE),
+  Solar.R = median(airquality$Solar.R, na.rm = TRUE)))
+skim(air_replaced)
 ```
 
 
@@ -408,7 +408,7 @@ skim(protein_stand)
 Помогите Даше возвести столбцы в квадрат!
 
 ```{r}
-# diamonds2 <- mutate_if(___, ___, ~ .^2)
+diamonds2 <- mutate_if(diamonds, is.numeric, ~ .^2)
 ```
 
 
@@ -421,10 +421,10 @@ skim(protein_stand)
 
 ```{r}
 usa <- USArrests
-# skim(___)
+skim(usa)
 
-# usa_stand <- ___(___ , ___, ~ as.vector(scale(.)))
-# ___
+usa_stand <- mutate_if(usa , is.numeric, ~ as.vector(scale(.)))
+glimpse(usa_stand)
 ```
 
 Выполним кластеризацию методом k-средних с помощью функции `kmeans`.
@@ -464,7 +464,7 @@ k_means_protein$size
 tidy(k_means_protein)
 ```
 
-Первые девять неназванных переменных — центры кластеров по каждой переменной.
+Первые девять неназванных переменных — центры кластеров по каждой переменной.
 
 
 * Упражнение 10.
@@ -473,7 +473,7 @@ tidy(k_means_protein)
 В выборе числа кластеров доверьтесь интуиции.
 
 ```{r}
-# k_means_usa <- kmeans(___, centers = ___)
+k_means_usa <- kmeans(usa_stand, centers = 3)
 ```
 
 
@@ -493,7 +493,7 @@ fviz_cluster(object = k_means_protein, data = protein_no_country,
 Визуализируйте результаты кластеризации данных по арестам `k_means_usa`.
 
 ```{r}
-# fviz_cluster(___, data = ___, ellipse.type = 'convex')
+fviz_cluster(object = k_means_usa, data = usa_stand, ellipse.type = 'convex')
 ```
 
 - Пересекаются ли кластеры?
@@ -502,7 +502,6 @@ fviz_cluster(object = k_means_protein, data = protein_no_country,
 
 Как понять, сколько кластеров брать оптимально?
 Один из способов сделать это — воспользоваться командой `fviz_nbclust` из пакета `factoextra`.
-
 
 ```{r}
 g1 <- fviz_nbclust(protein_no_country, kmeans, method = 'wss') +
@@ -537,13 +536,13 @@ g1 + (g2 / g3)
 Изобразите все три диаграммы вместе: первые две вместе наверху, вторую отеднльно внизу.
 
 ```{r}
-# p1 <- fviz_nbclust(___, kmeans, method = 'wss') +
-#  labs(subtitle = 'Elbow method')
-# p2 <- fviz_nbclust(___, ___, method = 'silhouette') +
-#  labs(subtitle = 'Silhouette method')
-# p3 <- fviz_nbclust(___, ___, method = 'gap_stat') +
-#  labs(subtitle = 'Gap statistic method')
-# (___ + ___) / ___
+p1 <- fviz_nbclust(usa_stand, kmeans, method = 'wss') +
+  labs(subtitle = 'Elbow method')
+p2 <- fviz_nbclust(usa_stand, kmeans, method = 'silhouette') +
+  labs(subtitle = 'Silhouette method')
+p3 <- fviz_nbclust(usa_stand, kmeans, method = 'gap_stat') +
+  labs(subtitle = 'Gap statistic method')
+(p1 + p2) / p3
 ```
 
 
@@ -579,8 +578,8 @@ fviz_dist(protein_dist)
 Посчитайте матрицу расстояний для таблицы `usa_stand` и визуализируйте её.
 
 ```{r}
-# usa_dist <- dist(___, method = 'euclidian')
-# fviz_dist(___)
+usa_dist <- dist(usa, method = 'euclidian')
+fviz_dist(usa_dist)
 ```
 
 Полученную матрицу расстояний можно передадать функции `hclust()`, которая кластеризует данные.
@@ -616,10 +615,10 @@ glimpse(protein_plus2)
 - Визуализируйте результат кластеризации и сделайте подписи цветными.
 
 ```{r}
-# usa_hcl <- hcut(___, k = ___)
-# fviz_dend(___,
-#          cex = 0.5, # размер подписи
-#          color_labels_by_k = ___) # цвет подписей по группам
+usa_hcl <- hcut(usa, k = 4)
+fviz_dend(usa_hcl,
+          cex = 0.5, # размер подписи
+          color_labels_by_k = TRUE) # цвет подписей по группам
 ```
 
 Иерархичская кластеризация полезна и для визуализаций корреляций.
@@ -639,16 +638,16 @@ corrplot(protein_cor, order = 'hclust', addrect = 3)
 Замените кружочки на квадраты, передав аргументу `method` значение `shade`.
 
 ```{r}
-# usa_cor <- cor(___)
-# corrplot(___, order = ___, addrect = ___, ___ = ___)
+usa_cor <- cor(usa)
+corrplot(usa_cor, order = 'hclust', addrect = 2, method = 'shade')
 ```
 
 * Упражнение 16.
 
 Добавьте к исходным данным `usa` кластеры, полученные с помощью иерархической кластеризации:
 ```{r}
-# usa_plus2 <- mutate(___, cluster = ___)
-# glimpse(___)
+usa_plus2 <- mutate(usa, cluster = TRUE)
+glimpse(usa_plus2)
 ```
 
 Визуализации [кластеров в известных наборах данных] (https://cran.r-project.org/web/packages/dendextend/vignettes/Cluster_Analysis.html)
