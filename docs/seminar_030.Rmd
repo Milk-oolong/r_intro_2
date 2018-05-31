@@ -41,13 +41,16 @@ devtools::install_github('thomasp85/patchwork')
 library(tidyverse) # обработка данных, графики...
 library(skimr)# описательные статистики
 library(rio) # импорт фантастического количества форматов данных
+
 library(cluster) # кластерный анализ
 library(factoextra) # визуализации kmeans, pca,
-library(broom) # стандартизация информации о модели
 library(dendextend) # визуализация дендрограмм
+
 library(corrplot) # визуализация корреляций
+
 library(naniar) # визуализация пропущенных значений
 library(visdat) # визуализация пропущенных значений
+
 library(patchwork) # удобное расположение графиков рядом
 ```
 
@@ -215,36 +218,47 @@ gdp
 gdp <- rename(gdp, indicator = X__1)
 ```
 
-Чтобы превратить широкую таблицу в длинную, нужна функция `melt()` из пакета `reshape2`.
+Чтобы превратить широкую таблицу в длинную, нужна функция `gather()` из пакета `tidyr`.
 
-Столбцы растают и стекут в новую переменную `year`.
-Если столбец нужно заморозить, то его надо перечислить в списке `id`.
+В длинной таблице мы создадим два новых столбца:
+  - столбец `date` с названиями старых столбцов
+  - столбец `quantity` со значениями таблицы
+
+Если столбец `indicator` нужно оставить как есть, упоминаем его с минусом!
 
 ```{r}
-long_gdp <- melt(gdp, id = 'indicator', variable.name = 'year')
-head(long_gdp, 30) # первые 30 наблюдений
+long_gdp <- gather(gdp, key = 'date', value = 'quantity', -indicator)
+glimpse(long_gdp)
 ```
 
-Чтобы сделать обратное — перевести длинную таблицу в широкую — понадобится функция `dcast()`.
+Создадим типичную длинную таблицу!
+Например, для каждого качества огранки `cut` и цвета `color` посчитаем медиану цены:
+```{r}
+diamonds_med <- group_by(diamonds, cut, color) %>%
+  summarise(med_price = median(price))
+diamonds_med
+```
 
+А теперь превратим её в широкую:
+```{r}
+diamonds_wide <- spread(diamonds_med, key = 'color', value = 'med_price')
+diamonds_wide
+```
 Здесь тупому компьютеру умный Homo Sapiens укажет:
-  - какая переменная пойдёт по строкам новой таблицы: `cut`
-  - какая переменная пойдёт по столбцам новой таблицы: `color`
-  - какая переменная пойдёт внутрь таблицы: `price`
-  - как реагировать компьютеру, если в данных будет несколько кандидатов в одну ячейку таблицы: взять `mean`
+  - какая переменная станет столбцами новой таблицы: `color`
+  - какая переменная пойдёт внутрь таблицы: `med_price`
 
-```{r}
-dcast(diamonds, cut ~ color, value.var = 'price', fun.aggregate = mean)
-```
+Не упомянутые переменные останутся строками новой широкой таблицы.
+
 
 * Упражнение 4.
 
 Из данных про воздух в Нью-Йорке `airquality` сделайте длинную таблицу.
-В качестве идентификаторов возьмите переменные `Month` и `Day`.
+В качестве сохраняемых столбцов возьмите переменные `Month` и `Day`.
 
 
 ```{r}
-# air_long <- melt(___, id = c('Month', 'Day')) # id оставлеет указанные столбцы
+# air_long <- gather(___, key = 'indicator', value = 'value', -Month, -___)
 # air_long
 ```
 
@@ -253,7 +267,7 @@ dcast(diamonds, cut ~ color, value.var = 'price', fun.aggregate = mean)
 А из получившейся длинной таблицы восстановите исходную!
 
 ```{r}
-# air_wide <- dcast(___, Day + Month ~ ___) # вместо пропуска должна быть переменная с несколькими значениями
+# air_wide <- spread(___, key = '___', value = 'value')
 # air_wide
 ```
 
@@ -281,7 +295,7 @@ vis_miss(typical_data, cluster = TRUE)
 
 ```{r}
 skim(airquality)
-vis_miss(___, cluster = ___)
+# vis_miss(___, cluster = ___)
 ```
 
 - Какие признаки содержат пропущенные наблюдения?
@@ -342,13 +356,13 @@ skim(typical_replaced)
 - Проверьте, что всё получилось :)
 
 ```{r}
-air_removed <- drop_na(___)
-skim(___)
+# air_removed <- drop_na(___)
+# skim(___)
 
-air_replaced <- replace_na(data = ___,
-  replace = list(Ozone = mean(airquality$___, na.rm = ___),
-  Solar.R = median(___, na.rm = ___)))
-skim(___)
+# air_replaced <- replace_na(data = ___,
+#  replace = list(Ozone = mean(airquality$___, na.rm = ___),
+#  Solar.R = median(___, na.rm = ___)))
+# skim(___)
 ```
 
 
@@ -405,7 +419,7 @@ skim(protein_stand)
 Помогите Даше возвести столбцы в квадрат!
 
 ```{r}
-diamonds2 <- mutate_if(___, ___, ~ .^2)
+# diamonds2 <- mutate_if(___, ___, ~ .^2)
 ```
 
 
@@ -417,10 +431,11 @@ diamonds2 <- mutate_if(___, ___, ~ .^2)
 - Проверьте, что всё получилось :)
 
 ```{r}
-skim(USArrests)
+usa <- USArrests
+skim(___)
 
-usa_stand <- ___(___ , ___, ~ as.vector(scale(.)))
-___
+# usa_stand <- ___(___ , ___, ~ as.vector(scale(.)))
+# ___
 ```
 
 Выполним кластеризацию методом k-средних с помощью функции `kmeans`.
@@ -469,7 +484,7 @@ tidy(k_means_protein)
 В выборе числа кластеров доверьтесь интуиции.
 
 ```{r}
-k_means_usa <- kmeans(___, centers = ___)
+# k_means_usa <- kmeans(___, centers = ___)
 ```
 
 
@@ -489,7 +504,7 @@ fviz_cluster(object = k_means_protein, data = protein_no_country,
 Визуализируйте результаты кластеризации данных по арестам `k_means_usa`.
 
 ```{r}
-fviz_cluster(___, data = ___, ellipse.type = 'convex')
+# fviz_cluster(___, data = ___, ellipse.type = 'convex')
 ```
 
 - Пересекаются ли кластеры?
@@ -502,24 +517,23 @@ fviz_cluster(___, data = ___, ellipse.type = 'convex')
 TODO: заботать эти методы!
 
 ```{r}
-fviz_nbclust(protein_no_country, kmeans, method = 'wss') +
+g1 <- fviz_nbclust(protein_no_country, kmeans, method = 'wss') +
   labs(subtitle = 'Elbow method')
-fviz_nbclust(protein_no_country, kmeans, method = 'silhouette') +
+g1
+
+g2 <- fviz_nbclust(protein_no_country, kmeans, method = 'silhouette') +
   labs(subtitle = 'Silhouette method')
-fviz_nbclust(protein_no_country, kmeans, method = 'gap_stat') +
+g2
+
+g3 <- fviz_nbclust(protein_no_country, kmeans, method = 'gap_stat') +
   labs(subtitle = 'Gap statistic method')
+g3
 ```
 
 С помощью хитрого пакета Томаса располагать графики легко!
 Попробуйте!
 
 ```{r}
-g1 <- fviz_nbclust(protein_no_country, kmeans, method = 'wss') +
-  labs(subtitle = 'Elbow method')
-g2 <- fviz_nbclust(protein_no_country, kmeans, method = 'silhouette') +
-  labs(subtitle = 'Silhouette method')
-g3 <- fviz_nbclust(protein_no_country, kmeans, method = 'gap_stat') +
-  labs(subtitle = 'Gap statistic method')
 (g1 + g2) / g3
 g1 + g2 + g3
 g1 + (g2 / g3)
@@ -531,24 +545,24 @@ g1 + (g2 / g3)
 
 * Упражнение 12.
 
-Проверьте, совпадает ли выбранное вами число кластеров с оптимальным.
+Проверьте, совпадает ли выбранное вами число кластеров для `usa_stand` с оптимальным.
 Изобразите все три диаграммы вместе: первые две вместе наверху, вторую отеднльно внизу.
 
 ```{r}
-p1 <- fviz_nbclust(___, kmeans, method = 'wss') +
-  labs(subtitle = 'Elbow method')
-p2 <- fviz_nbclust(___, ___, method = 'silhouette') +
-  labs(subtitle = 'Silhouette method')
-p3 <- fviz_nbclust(___, ___, method = 'gap_stat') +
-  labs(subtitle = 'Gap statistic method')
-(___ + ___) / ___
+# p1 <- fviz_nbclust(___, kmeans, method = 'wss') +
+#  labs(subtitle = 'Elbow method')
+# p2 <- fviz_nbclust(___, ___, method = 'silhouette') +
+#  labs(subtitle = 'Silhouette method')
+# p3 <- fviz_nbclust(___, ___, method = 'gap_stat') +
+#  labs(subtitle = 'Gap statistic method')
+# (___ + ___) / ___
 ```
 
 
-Метки кластерам легко добавить к исходным данным с помощью функции `augment` из пакета `broom`.
+Метки кластерам легко добавить к исходным данным:
 
 ```{r}
-protein_plus <- augment(k_means_protein, protein_no_country)
+protein_plus <- mutate(protein, cluster = k_means_protein$cluster)
 glimpse(protein_plus)
 ```
 
@@ -577,8 +591,8 @@ fviz_dist(protein_dist)
 Посчитайте матрицу расстояний для таблицы `usa_stand` и визуализируйте её.
 
 ```{r}
-usa_dist <- dist(___, method = 'euclidian')
-fviz_dist(___)
+# usa_dist <- dist(___, method = 'euclidian')
+# fviz_dist(___)
 ```
 
 Полученную матрицу расстояний можно передадать функции `hclust()`, которая кластеризует данные.
@@ -600,6 +614,13 @@ fviz_dend(protein_hcl,
           color_labels_by_k = TRUE) # цвет подписей по группам
 ```
 
+Выявленные кластеры можно добавить к исходным данным!
+```{r}
+protein_plus2 <- mutate(protein, cluster = protein_hcl$cluster)
+glimpse(protein_plus2)
+```
+
+
 * Упражнение 14.
 
 - Сделайте иерархическую кластеризацию с четыремя группами на данных об арестах.
@@ -607,10 +628,10 @@ fviz_dend(protein_hcl,
 - Визуализируйте результат кластеризации и сделайте подписи цветными.
 
 ```{r}
-usa_hcl <- hcut(___, k = ___)
-fviz_dend(___,
-          cex = 0.5, # размер подписи
-          color_labels_by_k = ___) # цвет подписей по группам
+# usa_hcl <- hcut(___, k = ___)
+# fviz_dend(___,
+#          cex = 0.5, # размер подписи
+#          color_labels_by_k = ___) # цвет подписей по группам
 ```
 
 Иерархичская кластеризация полезна и для визуализаций корреляций.
@@ -630,18 +651,18 @@ corrplot(protein_cor, order = 'hclust', addrect = 3)
 Замените кружочки на квадраты, передав аргументу `method` значение `shade`.
 
 ```{r}
-usa_cor <- cor(___)
-corrplot(___, order = ___, addrect = ___, ___ = ___)
+# usa_cor <- cor(___)
+# corrplot(___, order = ___, addrect = ___, ___ = ___)
 ```
-
 
 * Упражнение 16.
 
-Добавьте к исходным данным `protein_no_country` кластеры, полученные с помощью иерархической кластеризации:
+Добавьте к исходным данным `usa` кластеры, полученные с помощью иерархической кластеризации:
 ```{r}
-protein_plus2 <- augment(___, protein_no_country)
+# usa_plus2 <- mutate(___, cluster = ___)
+# glimpse(___)
 ```
 
-%TODO: ссылка на разные картинки для иерархической кластеризации (Б)
+Визуализации [кластеров в известных наборах данных] (https://cran.r-project.org/web/packages/dendextend/vignettes/Cluster_Analysis.html)
 
 Ура! :)
