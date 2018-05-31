@@ -31,6 +31,13 @@ docs/seminar_020.html: docs/seminar_020.Rmd
 	-rm docs/adult.rds
 	-rm docs/gdp.xls
 
+docs/seminar_030.html: docs/seminar_030.Rmd
+	cp data/Europenaprotein.csv docs/
+	cp data/gdp.xls docs/
+	Rscript -e "rmarkdown::render('docs/seminar_030.Rmd')"
+	-rm docs/Europenaprotein.csv
+	-rm docs/gdp.xls
+
 
 docs/hw_010.html: docs/hw_010.Rmd
 	cp data/cereal.csv docs/
