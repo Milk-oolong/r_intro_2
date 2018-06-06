@@ -39,11 +39,11 @@ devtools::install_github('thomasp85/patchwork')
 
 ```{r}
 library(tidyverse) # обработка данных, графики...
-library(skimr)# описательные статистики
+library(skimr) # описательные статистики
 library(rio) # импорт фантастического количества форматов данных
 
 library(cluster) # кластерный анализ
-library(factoextra) # визуализации kmeans, pca,
+library(factoextra) # визуализации kmeans, pca
 library(dendextend) # визуализация дендрограмм
 
 library(corrplot) # визуализация корреляций
