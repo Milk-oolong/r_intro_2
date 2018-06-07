@@ -15,7 +15,7 @@ archives/sem_030.zip: docs/seminar_030.Rmd data/Europenaprotein.csv data/gdp.xls
 
 
 archives/sem_040.zip: docs/seminar_040.Rmd data/Europenaprotein.csv docs/hw_040.Rmd
-	zip -j archives/sem_040.zip docs/seminar_030.Rmd data/Europenaprotein.csv docs/hw_040.Rmd
+	zip -j archives/sem_040.zip docs/seminar_040.Rmd data/Europenaprotein.csv docs/hw_040.Rmd
 
 
 
