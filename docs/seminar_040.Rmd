@@ -12,6 +12,11 @@ editor_options:
 ---
 
 
+Шаманское заклинание для настройки глобальных опций отчёта:
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
 
 ```{r}
 library(tidyverse) # обработка данных, графики...
@@ -335,7 +340,7 @@ pc^{1}_i = \alpha_1 x_i + \alpha_2 y_i + \alpha_3 z_i
 чтобы прямая проходила на минимальном расстоянии от имеющихся точек.
 
 \[
-\sum (x_i - \hat x_i)^2 + \sum (y_i - \hat y_i)^2 + \sum (z_i - \hat z_i)^2 \min,
+\sum (x_i - \hat x_i)^2 + \sum (y_i - \hat y_i)^2 + \sum (z_i - \hat z_i)^2 \to \min,
 \]
 при условии, что точки $\hat x_i$, $\hat y_i$, $\hat z_i$ лежат на одной прямой.
 
