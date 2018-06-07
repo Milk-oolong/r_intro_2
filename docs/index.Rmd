@@ -27,8 +27,8 @@ lang: ru-RU
 * Семинар 4, 7 июня. Факторный анализ.
 
     - Условия и данные [sem_040.zip](https://github.com/bdemeshev/r_intro_2/raw/master/archives/sem_040.zip);
-<!--
     - [Решение семинара](http://bdemeshev.github.io/r_intro_2/seminar_040_solved.html);
+<!--
     - [Решение домашней работы](http://bdemeshev.github.io/r_intro_2/hw_040_solutions.html);
 -->
 
