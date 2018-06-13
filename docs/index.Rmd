@@ -28,9 +28,7 @@ lang: ru-RU
 
     - Условия и данные [sem_040.zip](https://github.com/bdemeshev/r_intro_2/raw/master/archives/sem_040.zip);
     - [Решение семинара](http://bdemeshev.github.io/r_intro_2/seminar_040_solved.html);
-<!--
     - [Решение домашней работы](http://bdemeshev.github.io/r_intro_2/hw_040_solutions.html);
--->
 
 * !11 июня занятий не будет!
 * Семинар 5, 14 июня. Множественная регрессия.
