@@ -35,6 +35,7 @@ lang: ru-RU
 * Семинар 5, 14 июня. Множественная регрессия.
 
     - Условия и данные [sem_050.zip](https://github.com/bdemeshev/r_intro_2/raw/master/archives/sem_050.zip);
+    - [Решение семинара](http://bdemeshev.github.io/r_intro_2/seminar_050_solved.html);
 
 
 * Семинар 6, 18 июня. Маркдаун и красивое представление результатов.
