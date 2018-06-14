@@ -203,7 +203,6 @@ D_i = \frac{\sum_{j=1}^n(\hat y_j - \hat y_j^{(-i)})^2}{k\hat\sigma^2},
 
 ```{r}
 coefci(model_ur)
-sjp.lm(model_ur) # TODO: оставить эту?
 plot_model(model_ur, ci.lvl = 0.9)
 ```
 
@@ -216,7 +215,6 @@ plot_model(model_ur, ci.lvl = 0.9)
 
 ```{r}
 # coefci(___)
-# sjp.lm(___) # TODO: оставить эту?
 # plot_model(___, ci.lvl = ___)
 ```
 
@@ -424,7 +422,8 @@ summary(model_iv, diagnostics = TRUE)
 
 3. Тест Саргана
 
-Нулевая гипотеза: $H_0$:  TODO
+Нулевая гипотеза: $H_0$:  инструментальные переменные правильно подобраны, то есть
+они не коррелированы с ошибкой, а невключённые инструменты и не должны быть включены в модель.
 
 - Какие гипотезы отвергаются, какие не отвергаются в нашем случае?
 
@@ -468,4 +467,3 @@ cig$tdiff <- (cig$taxs - cig$tax) / cig$cpi
 # cig_iv2 <- ivreg(data = ___, ___ ~ ___ + ___ | ____ + ___ + I(tax/cpi))
 # summary(___, ___ = ___)
 ```
-TODO: вопросы (?)

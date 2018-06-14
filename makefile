@@ -13,9 +13,11 @@ archives/sem_020.zip: docs/seminar_020.Rmd data/adult.rds data/gdp.xls docs/hw_0
 archives/sem_030.zip: docs/seminar_030.Rmd data/Europenaprotein.csv data/gdp.xls docs/hw_030.Rmd
 	zip -j archives/sem_030.zip docs/seminar_030.Rmd data/Europenaprotein.csv data/gdp.xls docs/hw_030.Rmd
 
-
 archives/sem_040.zip: docs/seminar_040.Rmd data/Europenaprotein.csv docs/hw_040.Rmd
 	zip -j archives/sem_040.zip docs/seminar_040.Rmd data/Europenaprotein.csv docs/hw_040.Rmd
+
+archives/sem_050.zip: docs/seminar_050.Rmd data/pulse.txt docs/hw_050.Rmd
+	zip -j archives/sem_050.zip docs/seminar_050.Rmd data/pulse.txt docs/hw_050.Rmd
 
 
 
@@ -51,7 +53,10 @@ docs/seminar_040.html: docs/seminar_040.Rmd
 	Rscript -e "rmarkdown::render('docs/seminar_040.Rmd')"
 	-rm docs/Europenaprotein.csv
 
-
+docs/seminar_050.html: docs/seminar_050.Rmd
+	cp data/pulse.txt docs/
+	Rscript -e "rmarkdown::render('docs/seminar_050.Rmd')"
+	-rm ddata/pulse.txt
 
 docs/hw_010.html: docs/hw_010.Rmd
 	cp data/cereal.csv docs/
