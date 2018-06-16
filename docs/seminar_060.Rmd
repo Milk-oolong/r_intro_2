@@ -9,6 +9,8 @@ output:
 lang: ru-RU
 editor_options:
   chunk_output_type: console
+bibliography: references.bib
+csl: journal-of-econometrics.csl
 ---
 
 
@@ -135,7 +137,7 @@ R позволяет создавать документы в совершенн
 Начнём с нескольких таблиц.
 
 Составим по-быстрому табличку описательных статистик:
-```{r, output='as-is'}
+```{r, results='asis'}
 skim_to_wide(diamonds) %>%
   filter(type != 'factor') %>%
   select(variable, complete, mean, sd, p0, p50, hist) %>%
@@ -143,8 +145,13 @@ skim_to_wide(diamonds) %>%
 ```
 
 Оформляем наши таблички симпатичнее:
-```{r, ouput='as-is'}
-htmlreg(list(model_r, model_ur, model_r_rob, model_ur_rob), ci.force = FALSE)
+```{r, results='asis'}
+htmlreg(list(model_r, model_ur, model_r_rob, model_ur_rob), include.ci = FALSE)
+```
+
+Вариант с доверительными интервалами:
+```{r, results='asis'}
+htmlreg(list(model_r, model_ur, model_r_rob, model_ur_rob), ci.force = TRUE)
 ```
 
 
@@ -155,6 +162,11 @@ ggplot(data = pulse_fct, aes(x = Pulse1, y = Pulse2)) +
   geom_point() +
   geom_smooth(method = 'lm')
 ```
+
+Для примера процитируем несколько источников,
+@afanasyev92, @cobb2011teaching, @microsoftProject2008, @doe:website.
+
+Другие стилевые заготовки для оформления цитат можно скачать в архиве [zotero](https://www.zotero.org/styles).
 
 
 И библиографию в студию:
