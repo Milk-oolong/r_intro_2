@@ -288,7 +288,9 @@ skim_to_wide(diamonds) %>%
 
 Оформляем наши таблички симпатичнее:
 ```{r, results='asis'}
-htmlreg(list(model_r, model_ur, model_r_rob, model_ur_rob), include.ci = FALSE)
+htmlreg(list(model_r, model_ur, model_r_rob, model_ur_rob), 
+        include.ci = FALSE,
+        star.symbol = '\\*')
 ```
 
 Вариант с доверительными интервалами:
