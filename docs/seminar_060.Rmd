@@ -33,6 +33,8 @@ library(AER) # работа с инструментальными перемен
 library(Ecdat) # много-много разных наборов данных
 library(huxtable) # красивые таблички в html, tex
 library(stargazer) # красивые таблички в html, tex
+library(texreg) # и снова красивые таблички в html, tex :)
+library(estimatr) # модели с робастными ошибками
 ```
 
 Заметим, что в данном случае, важно, какой пакет подключать раньше, `AER`, или `Ecdat`.
@@ -41,21 +43,89 @@ library(stargazer) # красивые таблички в html, tex
 Если нужен другой набор данных, то до него можно дотянуться, указав имя пакета в начале, `AER::Mroz`.
 
 
+# Регрессия при гетероскедастичных ошибках
+
+Если не предполагать, что дисперсии ошибок $Var(u_i)$ одинаковы для всех наблюдений,
+то построенные нами доверительные интервалы и выполненная проверка гипотез — полный отстой :)
+
+Есть два подхода работать с робастными стандартными ошибками.
+Можно переоценить модель с помощью функций из пакета `estimatr`,
+а можно использовать ранее оцененные модели, указывая каждый раз нужную оценку ковариационной матрицы.
+
+
+Загружаем данные и объявляем переменные факторными:
+```{r}
+pulse <- import('pulse.txt')
+pulse_fct <- pulse %>%
+  mutate_at(vars(-Weight, -Height, -Age, -Pulse1, -Pulse2), factor)
+```
+
+Оценим модели без учёта гетероскедастичности:
+```{r}
+model_r <- lm(data = pulse_fct, Pulse2 ~ Pulse1)
+model_ur <- lm(data = pulse_fct, Pulse2 ~ Weight + Pulse1 + Ran + Smokes)
+```
+
+Способ с переоцениванием модели:
+```{r}
+model_r_rob <- lm_robust(data = pulse_fct, Pulse2 ~ Pulse1)
+model_ur_rob <- lm_robust(data = pulse_fct, Pulse2 ~ Weight + Pulse1 + Ran + Smokes)
+```
+
+Проверка гипотез и доверительные интервалы с робастно оценёнными моделями:
+```{r}
+coeftest(model_ur_rob)
+coefci(model_ur_rob)
+```
+
+Сравнение двух робастно оценённых моделей:
+```{r}
+waldtest(model_r_rob, model_ur_rob)
+```
+
+Второй способ с использование опции и изначальными моделями, оценёнными без поправки на гетероскадастичность.
+```{r}
+coeftest(model_ur, vcov. = vcovHC)
+coefci(model_ur, vcov. = vcovHC)
+```
+
+Результаты в R чуть отличаются от результатов в stata.
+По-умолчанию, R использует корректировку HC3 для подсчёта стандартных ошибок коэффициентов, а stata — менее удачную, устаревшую HC1.
+Сравнение есть у [Achim Zeileis](https://cran.r-project.org/web/packages/sandwich/vignettes/sandwich.pdf).
+Если хочется воспроизвести именно корректировку HC1, то запросто :)
+
+```{r}
+coeftest(model_ur, vcov. = vcovHC(model_ur, type = "HC1"))
+```
+
+Сравним две исходных модели с учётом поправки на гетероскедастичность:
+```{r}
+waldtest(model_r, model_ur, vcov = vcovHC)
+```
+
+- Какая модель предпочтительнее?
+
+
+* Упражнение 8.
+
+Получите таблицу с тестами на значимость коэффициентов в модели `house_ur`,
+используя корректировку `HC3`.
+А затем сравните две модели `house_r` и `house_ur` с учётом поправки на гетероскедастичность.
+
+```{r}
+# coeftest(___, vcov. = ___, type = ____)
+# waldtest(___, ___, vcov =  vcovHC)
+```
+
+
+
+
+
 Мы доносим информацию до читателя в графиках, таблицах и тексте.
 
 R позволяет создавать документы в совершенно разных форматах, мы познакомимся с тремя: html, docx, tex.
 
 
-```{r}
-pulse <- import('data/pulse.txt')
-pulse_fct <- pulse %>%
-  mutate_at(vars(-Weight, -Height, -Age, -Pulse1, -Pulse2), factor)
-
-
-model_r_rob <- lm_robust(data = pulse_fct, Pulse2 ~ Pulse1)
-model_ur_rob <- lm_robust(data = pulse_fct, Pulse2 ~ Weight + Pulse1 + Ran + Smokes)
-
-```
 
 
 # Формат html
@@ -72,4 +142,19 @@ skim_to_wide(diamonds) %>%
   hux(add_colnames = TRUE) %>% print_html()
 ```
 
-Табличка со сравнением нескольких моделей
+Оформляем наши таблички симпатичнее:
+```{r, ouput='as-is'}
+htmlreg(list(model_r, model_ur, model_r_rob, model_ur_rob), ci.force = FALSE)
+```
+
+
+
+Просто картинка в html с подписями и ссылкой:
+```{r, fig.width=3, fig.height=4}
+ggplot(data = pulse_fct, aes(x = Pulse1, y = Pulse2)) +
+  geom_point() +
+  geom_smooth(method = 'lm')
+```
+
+
+И библиографию в студию:
