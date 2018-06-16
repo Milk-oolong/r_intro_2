@@ -1,0 +1,75 @@
+---
+title: 'Семинар 6. Красотища'
+date: 'Июнь, 18, 2018'
+output:
+  html_document:
+    keep_md: no
+    number_sections: yes
+    toc: yes
+lang: ru-RU
+editor_options:
+  chunk_output_type: console
+---
+
+
+
+Шаманское заклинание для настройки глобальных опций отчёта:
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+Подключаем пакеты
+```{r}
+library(tidyverse) # обработка данных, графики...
+library(skimr) # описательные статистики
+library(rio) # импорт фантастического количества форматов данных
+library(broom) # метла превращает результаты оценивания моделей в таблички
+library(GGally) # больше готовых графиков
+library(sjPlot) # ещё больше графиков
+library(lmtest) # диагностика линейных моделей
+library(sjstats) # удобные мелкие функции для работы с моделями
+library(sandwich) # оценка Var для гетероскедастичности
+library(AER) # работа с инструментальными переменными
+library(Ecdat) # много-много разных наборов данных
+library(huxtable) # красивые таблички в html, tex
+library(stargazer) # красивые таблички в html, tex
+```
+
+Заметим, что в данном случае, важно, какой пакет подключать раньше, `AER`, или `Ecdat`.
+Оба пакета содержат встроенный набор данных с названием `Mroz`, и эти наборы данных чуть-чуть отличаются.
+По умолчанию, активен набор данных `Mroz` из последнего подключённого пакета.
+Если нужен другой набор данных, то до него можно дотянуться, указав имя пакета в начале, `AER::Mroz`.
+
+
+Мы доносим информацию до читателя в графиках, таблицах и тексте.
+
+R позволяет создавать документы в совершенно разных форматах, мы познакомимся с тремя: html, docx, tex.
+
+
+```{r}
+pulse <- import('data/pulse.txt')
+pulse_fct <- pulse %>%
+  mutate_at(vars(-Weight, -Height, -Age, -Pulse1, -Pulse2), factor)
+
+
+model_r_rob <- lm_robust(data = pulse_fct, Pulse2 ~ Pulse1)
+model_ur_rob <- lm_robust(data = pulse_fct, Pulse2 ~ Weight + Pulse1 + Ran + Smokes)
+
+```
+
+
+# Формат html
+
+Прелесть html состоит в богатстве оформления и динамических элементах.
+
+Начнём с нескольких таблиц.
+
+Составим по-быстрому табличку описательных статистик:
+```{r, output='as-is'}
+skim_to_wide(diamonds) %>%
+  filter(type != 'factor') %>%
+  select(variable, complete, mean, sd, p0, p50, hist) %>%
+  hux(add_colnames = TRUE) %>% print_html()
+```
+
+Табличка со сравнением нескольких моделей
