@@ -9,11 +9,12 @@ output:
     number_sections: true
     fig_width: 4
     fig_height: 3
-    fig_caption: true
+    fig_caption: yes
     highlight: tango
     latex_engine: xelatex
   word_document: default
   html_document: default
+bibliography: references.bib
 lang: ru-RU
 mainfont: Arial
 fontsize: 11pt
@@ -27,18 +28,23 @@ header-includes:
 - \newfontfamily{\cyrillicfont}{Arial}
 - \newfontfamily{\cyrillicfontsf}{Arial}
 - \usepackage{tabularx}
+- \usepackage{float}
 editor_options:
   chunk_output_type: console
 ---
 
+# Глобальные настройки
+
+* `echco = FALSE` не показывает чанки кода в готовом документе
+* `warning = FALSE` и `message = FALSE` не показывают сообщения и предупреждения
+* `incluse = FALSE` скроект вообще всё, что относится к коду, включая графики и таблицы
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
 
-Сначала подключим все нужные библиотеки, но никому это не покажем!
-Для этого в чанк кода добавим опцию `include=FALSE`.
 
-```{r, include=FALSE}
+```{r}
 library(tidyverse) # манипуляции с данными и графики
 library(skimr) # описательные статистики
 library(rio) # импорт фантастического количества форматов данных
@@ -56,29 +62,40 @@ library(estimatr) # диагностика линейных моделей с р
 
 В опциях для куска кода везде будум писать `results='asis'`.
 Без неё в pdf-документе будет отображаться не сама таблица, а команды из латеха, которые её создают.
+Также добавим название для чанка `tab_models`.
 
-```{r results='asis'}
-pulse <- import('data/pulse.txt')
+```{r tab_models, results='asis'}
+pulse <- import('pulse.txt')
 pulse_fct <- pulse %>%
   mutate_at(vars(-Weight, -Height, -Age, -Pulse1, -Pulse2), factor)
 
 model_r_rob <- lm_robust(data = pulse_fct, Pulse2 ~ Pulse1)
 model_ur_rob <- lm_robust(data = pulse_fct, Pulse2 ~ Weight + Pulse1 + Ran + Smokes)
 
-texreg(list(model_r_rob, model_ur_rob), include.ci = FALSE)
+texreg(list(model_r_rob, model_ur_rob), include.ci = FALSE, caption = "\\label{tab:models} Сравнение ограниченной и неограниченной моделей")
 ```
 
-Таблицу с описательными статистиками можно тоже получить в латехе.
-Для этого к нужной таблице применим функцию `print_latex()` из пакета `huxtable`.
+Функции `texreg` мы передали аргумент `caption`, в котором задали метку для созданной таблицы.
+Теперь на неё можно ссылаться.
+Да, на Таблицу \ref{tab:models} со сравнением моделей!
+
+Табличку с описательными статистиками можно тоже получить в латехе.
+Для этого применим к ней функцию `print_latex()` из пакета `huxtable`.
 
 ```{r results='asis'}
-skim_to_wide(diamonds) %>%
+h_desc <- skim_to_wide(diamonds) %>%
   filter(type != 'factor') %>%
   select(variable, complete, mean, sd, p0, p50) %>%
-  hux(add_colnames = TRUE) %>% print_latex()
+  hux(add_colnames = TRUE) 
+
+caption(h_desc) <- "\\label{tab:desc_tab}Таблица с описательными статистиками"
+print_latex(h_desc)
 ```
 
 Таким же образом выведем таблицу с корреляциями!
+И будем ссылаться на неё как на Таблицу \ref{tab:desc_tab}.
+
+То же самое сработает и с табличкой корреляций.
 
 ```{r results='asis'}
 diamoinds_num <- diamonds %>%
@@ -93,7 +110,7 @@ d_hux <- as_hux(diamonds_cor) %>%
 d_hux <- d_hux %>% 
       huxtable::add_rownames() %>% # добавляем названия строк
       huxtable::add_colnames() %>% # добавляем названия столбцов
-      set_caption('Корреляция признаков бриллиантов') %>% # добавляем название таблицы
+      set_caption('\\label{tab:corr_tab} Корреляции признаков бриллиантов') %>% # добавляем название таблицы
       set_bold(1, everywhere, TRUE) %>% # жирный шрифт
       set_italic(everywhere, 1, TRUE) %>% # курсив
       set_all_borders(0.5) # границы таблицы
@@ -114,11 +131,15 @@ d_hux
 - `fig.align` — отвечает за расположение картинки на странице, возможны опции
 `center`, `left`и `right`.
 
-```{r reg_plot, fig.width=3, fig.height=3, fig.align='center', fig.lp="fig:", fig.cap = '', results='asis'}
+```{r reg_plot, fig.width=3, fig.height=3, fig.align='center', fig.cap="\\label{fig:fig1} Регрессия пульса до упражнений на пульс после", results='asis', out.extra=''}
 ggplot(data = pulse_fct, aes(x = Pulse1, y = Pulse2)) +
   geom_point() +
   geom_smooth(method = 'lm')
 ```
 
+Рисункки будут нумероваться отдельно от таблиц.
+Поэтому при ссылке на Рисунок \ref{fig:reg_plot} мы увидим первый номер.
 
-\ref{fig:reg_plot}
+# Библиография
+
+библиография???

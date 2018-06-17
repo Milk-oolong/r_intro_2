@@ -36,7 +36,7 @@ lang: ru-RU
 
     - Условия и данные [sem_050.zip](https://github.com/bdemeshev/r_intro_2/raw/master/archives/sem_050.zip);
     - [Решение семинара](http://bdemeshev.github.io/r_intro_2/seminar_050_solved.html);
-
+    - [Решение домашней работы](http://bdemeshev.github.io/r_intro_2/hw_050_solutions.html);
 
 * Семинар 6, 18 июня. Маркдаун и красивое представление результатов.
 * Семинар 7, 21 июня. Логистическая регрессия и классификация.
