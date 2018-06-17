@@ -86,7 +86,7 @@ texreg(list(model_r_rob, model_ur_rob), include.ci = FALSE, caption = "\\label{t
 h_desc <- skim_to_wide(diamonds) %>%
   filter(type != 'factor') %>%
   select(variable, complete, mean, sd, p0, p50) %>%
-  hux(add_colnames = TRUE) 
+  hux(add_colnames = TRUE)
 
 caption(h_desc) <- "\\label{tab:desc_tab}Таблица с описательными статистиками"
 print_latex(h_desc)
@@ -103,11 +103,11 @@ diamoinds_num <- diamonds %>%
 diamonds_cor <- cor(diamoinds_num) %>% round(2)
 
 d_hux <- as_hux(diamonds_cor) %>%
-  set_background_color(where(abs(diamonds_cor) > 0.95 & 
+  set_background_color(where(abs(diamonds_cor) > 0.95 &
                                row(diamonds_cor) != col(diamonds_cor)), 'red') %>%
   set_text_color(where(row(diamonds_cor) == col(diamonds_cor)), 'grey')
 
-d_hux <- d_hux %>% 
+d_hux <- d_hux %>%
       huxtable::add_rownames() %>% # добавляем названия строк
       huxtable::add_colnames() %>% # добавляем названия столбцов
       set_caption('\\label{tab:corr_tab} Корреляции признаков бриллиантов') %>% # добавляем название таблицы
@@ -140,6 +140,7 @@ ggplot(data = pulse_fct, aes(x = Pulse1, y = Pulse2)) +
 Рисункки будут нумероваться отдельно от таблиц.
 Поэтому при ссылке на Рисунок \ref{fig:reg_plot} мы увидим первый номер.
 
+Упомянем наши источники, чтобы они появились в библиографии: @afanasyev92, @cobb2011teaching, @microsoftProject2008, @doe:website.
+
 # Библиография
 
-библиография???
