@@ -72,7 +72,7 @@ pulse_fct <- pulse %>%
 model_r_rob <- lm_robust(data = pulse_fct, Pulse2 ~ Pulse1)
 model_ur_rob <- lm_robust(data = pulse_fct, Pulse2 ~ Weight + Pulse1 + Ran + Smokes)
 
-texreg(list(model_r_rob, model_ur_rob), include.ci = FALSE, caption = "\\label{tab:models} Сравнение ограниченной и неограниченной моделей")
+texreg(list(model_r_rob, model_ur_rob), include.ci = FALSE, caption = '\\label{tab:models} Сравнение ограниченной и неограниченной моделей')
 ```
 
 Функции `texreg` мы передали аргумент `caption`, в котором задали метку для созданной таблицы.
@@ -88,7 +88,7 @@ h_desc <- skim_to_wide(diamonds) %>%
   select(variable, complete, mean, sd, p0, p50) %>%
   hux(add_colnames = TRUE)
 
-caption(h_desc) <- "\\label{tab:desc_tab}Таблица с описательными статистиками"
+caption(h_desc) <- '\\label{tab:desc_tab}Таблица с описательными статистиками'
 print_latex(h_desc)
 ```
 
@@ -131,7 +131,7 @@ d_hux
 - `fig.align` — отвечает за расположение картинки на странице, возможны опции
 `center`, `left`и `right`.
 
-```{r reg_plot, fig.width=3, fig.height=3, fig.align='center', fig.cap="\\label{fig:fig1} Регрессия пульса до упражнений на пульс после", results='asis', out.extra=''}
+```{r reg_plot, fig.width=3, fig.height=3, fig.align='center', fig.cap='\\label{fig:fig1} Регрессия пульса до упражнений на пульс после', results='asis', out.extra=''}
 ggplot(data = pulse_fct, aes(x = Pulse1, y = Pulse2)) +
   geom_point() +
   geom_smooth(method = 'lm')
@@ -143,4 +143,3 @@ ggplot(data = pulse_fct, aes(x = Pulse1, y = Pulse2)) +
 Упомянем наши источники, чтобы они появились в библиографии: @afanasyev92, @cobb2011teaching, @microsoftProject2008, @doe:website.
 
 # Библиография
-
