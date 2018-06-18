@@ -19,8 +19,8 @@ archives/sem_040.zip: docs/seminar_040.Rmd data/Europenaprotein.csv docs/hw_040.
 archives/sem_050.zip: docs/seminar_050.Rmd data/pulse.txt docs/hw_050.Rmd
 	zip -j archives/sem_050.zip docs/seminar_050.Rmd data/pulse.txt docs/hw_050.Rmd
 
-archives/sem_050.zip: docs/seminar_060.Rmd docs/seminar_060_tex.Rmd data/pulse.txt
-	zip -j archives/sem_060.zip docs/seminar_060.Rmd docs/seminar_060_tex.Rmd data/pulse.txt 
+archives/sem_060.zip: docs/seminar_060.Rmd docs/seminar_060_tex.Rmd data/pulse.txt
+	zip -j archives/sem_060.zip docs/seminar_060.Rmd docs/seminar_060_tex.Rmd data/pulse.txt
 
 
 
