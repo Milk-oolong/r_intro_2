@@ -57,7 +57,7 @@ library(estimatr) # модели с робастными ошибками
 
 Загружаем данные и объявляем переменные факторными:
 ```{r}
-pulse <- import('pulse.txt')
+pulse <- import('data/pulse.txt')
 pulse_fct <- pulse %>%
   mutate_at(vars(-Weight, -Height, -Age, -Pulse1, -Pulse2), factor)
 ```
@@ -118,16 +118,6 @@ waldtest(model_r, model_ur, vcov = vcovHC)
 # coeftest(___, vcov. = ___, type = ____)
 # waldtest(___, ___, vcov =  vcovHC)
 ```
-
-
-
-
-
-Мы доносим информацию до читателя в графиках, таблицах и тексте.
-
-R позволяет создавать документы в совершенно разных форматах, мы познакомимся с тремя: html, docx, tex.
-
-
 
 
 
@@ -271,6 +261,12 @@ cig$tdiff <- (cig$taxs - cig$tax) / cig$cpi
 # summary(___, ___ = ___)
 ```
 
+Мы доносим информацию до читателя в графиках, таблицах и тексте.
+
+R позволяет создавать документы в совершенно разных форматах, мы познакомимся с тремя: html, docx, tex.
+
+
+
 
 # Формат html
 
@@ -288,7 +284,7 @@ skim_to_wide(diamonds) %>%
 
 Оформляем наши таблички симпатичнее:
 ```{r, results='asis'}
-htmlreg(list(model_r, model_ur, model_r_rob, model_ur_rob), 
+htmlreg(list(model_r, model_ur, model_r_rob, model_ur_rob),
         include.ci = FALSE,
         star.symbol = '\\*')
 ```
@@ -304,13 +300,16 @@ htmlreg(list(model_r, model_ur, model_r_rob, model_ur_rob), ci.force = TRUE)
 ```{r, fig.width=3, fig.height=4}
 ggplot(data = pulse_fct, aes(x = Pulse1, y = Pulse2)) +
   geom_point() +
-  geom_smooth(method = 'lm')
+  geom_smooth(method = 'lm') + labs(x = 'Пульс до (уд/мин)', y = 'Пульс после (уд/мин)')
 ```
 
 Для примера процитируем несколько источников,
 @afanasyev92, @cobb2011teaching, @microsoftProject2008, @doe:website.
 
 Другие стилевые заготовки для оформления цитат можно скачать в архиве [zotero](https://www.zotero.org/styles).
+
+
+Примеры таблиц для html с [пакетом huxtable](https://hughjonesd.github.io/huxtable/), интерактивные элементы, например, карты, с [htmlwidgets](http://gallery.htmlwidgets.org).
 
 
 И библиографию в студию:
