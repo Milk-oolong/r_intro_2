@@ -261,11 +261,20 @@ modelLookup(model = 'ranger')
 
 Но мы можем заказать перебор любых.
 
-Можно заказать количество перебираемых значений
+Можно заказать количество перебираемых значений для каждого параметра:
+```{r}
+ranger_model <- train(y ~ . - Class, data = educ_test,
+                    method = "ranger",
+                    na.action = na.omit,
+                    importance = 'impurity',
+                    tuneLength = 4)
 ```
 
 Или явно значения
+```{r}
 
+
+```
 
 
 Ура :)
