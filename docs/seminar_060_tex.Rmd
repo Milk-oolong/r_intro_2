@@ -16,7 +16,7 @@ output:
   html_document: default
 bibliography: references.bib
 lang: ru-RU
-mainfont: Arial
+mainfont: Linux Libertine O
 fontsize: 11pt
 geometry: left=2cm, right=2cm, top=2cm, bottom=2cm
 documentclass: article
@@ -24,9 +24,9 @@ linkcolor: blue
 urlcolor: blue
 citecolor: blue
 header-includes:
-- \newfontfamily{\cyrillicfonttt}{Arial}
-- \newfontfamily{\cyrillicfont}{Arial}
-- \newfontfamily{\cyrillicfontsf}{Arial}
+- \newfontfamily{\cyrillicfonttt}{Linux Libertine O}
+- \newfontfamily{\cyrillicfont}{Linux Libertine O}
+- \newfontfamily{\cyrillicfontsf}{Linux Libertine O}
 - \usepackage{tabularx}
 - \usepackage{float}
 editor_options:
