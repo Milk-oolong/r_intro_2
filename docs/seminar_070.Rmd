@@ -17,7 +17,6 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
-# Регрессия при гомоскедастичных ошибках
 
 ```{r}
 library(tidyverse) # обработка данных, графики...
@@ -91,6 +90,29 @@ educ_test <- educ_fct[-train_rows, ]
 - когда остановить процесс деления веточек?
 - следует ли обрезать дерево после окончания деления?
 - как обрабатывать пропущенные значений?
+
+```{r}
+tree_model <- train(y ~ . - Class, data = educ_test,
+                      method = "rpart2",
+                      na.action = na.omit)
+```
+
+Картинка дерева:
+```{r}
+rpart.plot(tree_model$finalModel)
+```
+
+Описание дерева:
+```{r}
+summary(tree_model)
+```
+
+Предсказываем с помощью дерева на тестовой выборке:
+```{r}
+tree_predictions <- predict(tree_model, educ_test, na.action = na.pass)
+tree_report <- confusionMatrix(tree_predictions, educ_test$y)
+tree_report
+```
 
 
 
