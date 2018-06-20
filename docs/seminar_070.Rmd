@@ -23,15 +23,14 @@ library(tidyverse) # обработка данных, графики...
 library(skimr) # описательные статистики
 library(rio) # импорт фантастического количества форматов данных
 library(broom) # метла превращает результаты оценивания моделей в таблички
-library(GGally) # больше готовых графиков
-library(sjPlot) # ещё больше графиков
-library(lmtest) # диагностика линейных моделей
 library(Ecdat) # много-много разных наборов данных
-library(sjstats) # удобные мелкие функции для работы с моделями
+library(ISLR) # ещё данные
 library(sandwich) # оценка Var для гетероскедастичности
 library(caret) # пакет для подбора параметров разных моделей
+library(FFtrees) # быстрые деревья
 library(margins) # для подсчёта предельных эффектов
 library(rpart.plot) # для картинок деревьев
+library(plotROC) # визуализация ROC-кривой
 ```
 
 
@@ -48,11 +47,13 @@ skim(educ)
 
 
 Для целей бинарной классификации объединяем две верхних категории в одну:
+
 ```{r}
 educ_logit <- mutate(educ, y = fct_collapse(Class, H = c('M', 'H')))
 ```
 
 И объявляем все текстовые переменные факторными:
+
 ```{r}
 educ_fct <- mutate_if(educ, is.character, factor)
 ```
@@ -64,37 +65,66 @@ educ_fct <- mutate_if(educ, is.character, factor)
 поэтому зададим на удачу зерно генератора случайных чисел.
 
 Создадим вектор `train_rows` с номерами строк для обучающей части.
+
 ```{r}
 set.seed(777)
 train_rows <- createDataPartition(educ_fct$y, p = 0.8, list = FALSE)
 ```
 
 И разделим выборку согласно вектору `train_rows`:
+
 ```{r}
 educ_train <- educ_fct[train_rows, ]
 educ_test <- educ_fct[-train_rows, ]
 ```
 
+* Упражнение 1.
+
+Разделите набор данных `Default` из пакета `ISLR` на обучающую и тестовую выборки так,
+чтобы в первую попало 70\% всех наблюдений.
+
+```{r}
+def <- Default
+# glimpse(___)
+
+# train_rows <- createDataPartition(___, p = ___, list = FALSE)
+# def_train <- def[___, ]
+# def_test <- __[-___, ]
+```
+
+
 
 # Логистическая регрессия
 
+TODO: теория
 
 Реализуем логистическую регрессию с помощью функции `glm`.
 Передадим ей набор данных `educ_train`, формулу и укажем специалный аргумент `family = binomial(link = 'logit')`.
 Сохраним результаты оценивания в переменную `educ_lmodel` и посмотрим на них.
 
 ```{r}
-educ_lmodel <- train(data = educ_train, y ~ gender + SectionID + raisedhands, family = binomial(link = 'logit'), method = 'glm')
-summary(educ_lmodel)
+educ_lmodel_glm <- glm(data = educ_train, y ~ gender + SectionID + raisedhands, family = binomial(link = 'logit'))
+summary(educ_lmodel_glm)
 ```
 
 TODO: вопросы
+
+* Упражнение 2.
+
+Оцените вероятность не возврата кредита `default` в зависимости от всех остальных
+факторов в наборе данных `def`.
+
+```{r}
+# def_lmodel_glm <- glm(data = ___, ___ ~ ., family = binomial(link = '___'))
+# summary(___)
+```
+
 
 Чтобы найти предельные эффекты, воспользуемся функцией `margins` из одноимённого пакета.
 Снова выведем результаты командой `summary()`.
 
 ```{r}
-educ_margins <- margins(educ_lmodel$finalModel)
+educ_margins <- margins(educ_lmodel_glm)
 summary(educ_margins)
 ```
 
@@ -105,9 +135,43 @@ TODO: вопросы
 Ей нужно передать оценённую модель и указать переменные для визуализации в аргументе `terms`.
 
 ```{r}
-pred_vis <- ggpredict(educ_lmodel$finalModel, terms = c('raisedhands', 'gender'))
-plot(pred_vis)
+pred_educ_vis <- ggpredict(educ_lmodel_glm, terms = c('raisedhands', 'gender'))
+plot(pred_educ_vis)
 ```
+
+* Упражнение 3.
+
+Оцените предельные эффекты для модели `def_lmodel_glm`.
+Визуализируйте предельный эффекта для баланса кредитной карты `balance` отдельно для
+студентов `student` и всех остальных.
+
+```{r}
+# def_margins <- margins(___)
+# summary(___)
+
+# pred_def_vis <- ggpredict(___, terms = c('___', '___'))
+# plot(___)
+```
+
+
+Оценивать логистическую модель также можно с помощью пакета `caret`.
+Изменения минимальные:
+
+```{r}
+educ_lmodel <- train(data = educ_train, y ~ gender + SectionID + raisedhands, family = binomial(link = 'logit'), method = 'glm')
+summary(educ_lmodel)
+```
+
+* Упражнение 4.
+
+Оцените заново логистическую регессию по набору данных `def` с помощью функций пакета
+`caret`.
+
+```{r}
+# def_lmodel <- train(data = ___, default ~ ___, family = binomial(link = 'logit'), method = '___')
+# summary(___)
+```
+
 
 Посторим прогнозы модели для тестовых данных `educ_test`.
 Для этого будем использовать функцию `predict`, которой передадим оценённую модель `educ_lmodel`.
@@ -118,11 +182,25 @@ plot(pred_vis)
 educ_pred <- predict(educ_lmodel, newdata = educ_test)
 head(educ_pred)
 
-educ_prob <- predict(educ_lmodel, newdata = educ_test, type = 'prob')
+educ_prdob <- predict(educ_lmodel, newdata = educ_test, type = 'prob')
 head(educ_prob)
 ```
 
-Теперь мы можем посмотреть на матрицу ошибок и получить узнать, насколько хорошую модель мы оецнили.
+* Упражнение 5.
+
+Постройте прогнозы для тестовой выборки `def_test`.
+Сохраните как предсказанные классы, так и их вероятности.
+
+```{r}
+# def_pred <- predict(___, newdata = ___)
+# head(___)
+
+# def_prob <- predict(___, newdata = ___, type = ___)
+# head(___)
+```
+
+
+Теперь мы можем посмотреть на матрицу ошибок и узнать, насколько хорошую модель мы оецнили.
 Для этого будем использовть функцию `confusionMatrix` из пакета `caret`.
 В качестве аргумента `data` нужно указать предсказанные значения, а в `reference` — правильные ответы.
 
@@ -130,9 +208,77 @@ head(educ_prob)
 confusionMatrix(data = educ_pred, reference = educ_test$y)
 ```
 
-TODO: доделаю про ROC
+* Упражнение 6.
+
+Составьте матрицу ошибок для прогнозов модели `def_lmodel`.
+
+```{r}
+# confusionMatrix(data = ___, reference = ___)
+```
 
 
+Чтобы получичть и другие метрики качества для нашей модели, будем использовать функции `twoClassSummary()` и `prSummary()`.
+Первая возвращает значения ROC, специфичности и чувствительности.
+Вторая — AUC, полноту, точность и F-меру.
+Однако обе функции требуют, чтобы во данных были столбцы с вероятностями классов под названиями самих этих классов, истинные ответы под названием `obs`, и бинарные предсказания, названные как `pred`.
+Поэтому создаим отедельный датафрейм `educ_test_set` со всеми результатами оценивания.
+
+```{r}
+educ_test_set <- data.frame(H = educ_prob$H,
+                            L = educ_prob$L,
+                            pred = educ_pred,
+                            obs = educ_test$y)
+glimpse(educ_test_set)
+
+twoClassSummary(educ_test_set, lev = levels(educ_test_set$obs))
+prSummary(educ_test_set, lev = levels(educ_test_set$obs)) # нужен пакет MLmetrics
+```
+
+* Упражнение 7.
+
+Выведите характеристики модели `def_lmodel` с помощью функций `twoClassSummary()` и `prSummary()`.
+
+```{r}
+# def_test_set <- data.frame(___ = def_prob$No,
+#                            ___ = def_prob$Yes,
+#                            pred = ___,
+#                            obs = ___)
+
+# twoClassSummary(___, lev = levels(def_test_set$obs))
+# prSummary(___, lev = levels(___))
+```
+
+
+Почти все метрики можно визуализировать!
+Но для примера мы построим ROC-кривую.
+Для этого вдобавок к базовому cлою `ggplot` мы будем использовать слой `geom_roc` из пакета `plotROC`.
+В эстетиках нужно указать аргументы `d` — истинные значения — и `m` — метки класса 1.
+Если добавить аргумент `color`, то можно получить разные ROC-кривые по категориям какой-нибудь переменной.
+
+```{r}
+ggplot(educ_test_set, aes(d = obs, m = L)) +
+  geom_roc(n.cuts = 0)
+
+educ_test_set <- mutate(educ_test_set, gender = educ_test$gender)
+
+ggplot(educ_test_set, aes(d = obs, m = L, color = gender)) +
+  geom_roc(n.cuts = 0)
+```
+
+* Упражнение 8.
+
+Визуализируйте ROC-кривую для прогнозов модели `def_lmodel`.
+Сначала общую, а затем отдельно для студентов и всех остальных.
+
+```{r}
+# ggplot(___, aes(d = ___, m = Yes)) +
+#   geom_roc(n.cuts = 0)
+
+# def_test_set <- mutate(def_test_set, stud = ___)
+
+# ggplot(___, aes(d = ___, m = Yes, color = ___)) +
+#   geom_roc(___)
+```
 
 
 
@@ -149,26 +295,52 @@ TODO: доделаю про ROC
 
 ```{r}
 tree_model <- train(y ~ . - Class, data = educ_test,
-                      method = "rpart2",
+                      method = 'rpart2',
                       na.action = na.omit)
 ```
 
 Картинка дерева:
+
 ```{r}
 rpart.plot(tree_model$finalModel)
 ```
 
 Описание дерева:
+
 ```{r}
 summary(tree_model)
 ```
 
+* Упражнение 9.
+
+Постройте дерево для набора данных `def`, визуализируйте результат и нарисуйте картинку.
+
+```{r}
+# def_tree <- train(data = ___, default ~ ., method = '___')
+# rpart.plot(___$finalModel)
+# summary(___)
+```
+
+
 Предсказываем с помощью дерева на тестовой выборке:
+
 ```{r}
 educ_tree <- mutate(educ_test,
   yhat = predict(tree_model, educ_test, na.action = na.pass))
 confusionMatrix(educ_tree$yhat, educ_tree$y)
 ```
+
+* Упражнение 10.
+
+Постройте прогнозы с помощью дерева на тестовой выборке `def_test` и
+оцените его качество, посмотрев на матрицу ошибок.
+
+```{r}
+# def_tree_pred <- mutate(___,
+#   yhat = predict(___, ___))
+# confusionMatrix(___)s
+```
+
 
 Пакет `caret` представляет собой общий интерфейс ко многим моделям,
 однако некоторые модели он ещё не поддерживает.
@@ -179,19 +351,32 @@ confusionMatrix(educ_tree$yhat, educ_tree$y)
 
 Мы применим их для спасения неуспевающих студентов :)
 Увы, пакет принимает на вход только 0/1 в зависимой переменной, поэтому заменим названия категорий на числа:
+
 ```{r}
 educ_train2 <- mutate(educ_train, ybin = ifelse(y == 'H', 1, 0)) %>%
 select(-Class)
 ```
 
 И построим картинку для быстрого и стройного дерева:
+
 ```{r}
 fftree_model <- FFTrees(formula = ybin ~ .,
                      data = educ_train2)
 plot(fftree_model)
-
 ```
 
+* Упражнение 11.
+
+Используйте быстрые и стройные деревья для набора данных `def_train`.
+Помните, что целевая переменная в нём закодирована как 'Yes' и 'No'.
+
+```{r}
+# def_train2 <- mutate(___, defaultbin = ifelse(default == ___))
+
+# def_fftree <- FFTrees(formula = ___ ~ .,
+#                       data = ___)
+# plot(___)
+```
 
 
 # Случайный лес
@@ -218,10 +403,11 @@ plot(fftree_model)
 - количество деревьев;
 
 
-Посмотрим на все вариации случайного леса, которые перебрал `ranger`
+Посмотрим на все вариации случайного леса, которые перебрал `ranger`.
+
 ```{r}
 ranger_model <- train(y ~ . - Class, data = educ_test,
-                    method = "ranger",
+                    method = 'ranger',
                     na.action = na.omit,
                     importance = 'impurity')
 ranger_model
@@ -229,6 +415,7 @@ plot(ranger_model)
 ```
 
 И более подробно про наилучшую:
+
 ```{r}
 ranger_model$finalModel
 ```
@@ -236,7 +423,8 @@ ranger_model$finalModel
 
 К сожалению, построить информативно про все сотни деревьев невозможно.
 
-Можно попытаться выделить важность переменных
+Можно попытаться выделить важность переменных:
+
 ```{r}
 ranger_import <- varImp(ranger_model)
 ranger_import
@@ -245,6 +433,7 @@ plot(ranger_import)
 
 
 И, конечно, построить прогнозы:
+
 ```{r}
 educ_ranger <- mutate(educ_test,
   yhat = predict(ranger_model, educ_test, na.action = na.pass))
@@ -254,6 +443,7 @@ confusionMatrix(educ_ranger$yhat, educ_ranger$y)
 По умолчанию, пакет `caret` сам решает, сколько значений параметров перебирать и какие конкретно.
 
 Список перебираемых параметров:
+
 ```{r}
 modelLookup(model = 'ranger')
 ```
@@ -262,19 +452,22 @@ modelLookup(model = 'ranger')
 Но мы можем заказать перебор любых.
 
 Можно заказать количество перебираемых значений для каждого параметра:
+
 ```{r}
 ranger_model <- train(y ~ . - Class, data = educ_test,
-                    method = "ranger",
-                    na.action = na.omit,
-                    importance = 'impurity',
-                    tuneLength = 4)
-```
+                      method = "ranger",
+                      na.action = na.omit,
+                      importance = 'impurity',
+                      tuneLength = 4)
+  ```
 
 Или явно значения
-```{r}
+
+ ```{r}
 
 
-```
+ ```
+
 
 
 Ура :)
