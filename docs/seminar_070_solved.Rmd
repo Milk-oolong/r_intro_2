@@ -87,11 +87,11 @@ educ_test <- educ_fct[-train_rows, ]
 
 ```{r}
 def <- Default
-# glimpse(___)
+glimpse(def)
 
-# train_rows <- createDataPartition(___, p = ___, list = FALSE)
-# def_train <- def[___, ]
-# def_test <- __[-___, ]
+train_rows <- createDataPartition(def$default, p = 0.7, list = FALSE)
+def_train <- def[train_rows, ]
+def_test <- def[-train_rows, ]
 ```
 
 
@@ -137,8 +137,8 @@ summary(educ_lmodel_glm)
 факторов в наборе данных `def`.
 
 ```{r}
-# def_lmodel_glm <- glm(data = ___, ___ ~ ., family = binomial(link = '___'))
-# summary(___)
+def_lmodel_glm <- glm(data = def_train, default ~ ., family = binomial(link = 'logit'))
+summary(def_lmodel_glm)
 ```
 
 
@@ -170,11 +170,11 @@ pred_educ_vis <- plot(pred_educ_vis)
 студентов `student` и всех остальных.
 
 ```{r}
-# def_margins <- margins(___)
-# summary(___)
+def_margins <- margins(def_lmodel_glm)
+summary(def_margins)
 
-# pred_def_vis <- ggpredict(___, terms = c('___', '___'))
-# plot(___)
+pred_def_vis <- ggpredict(def_lmodel_glm, terms = c('balance', 'student'))
+plot(pred_def_vis)
 ```
 
 
@@ -192,8 +192,8 @@ summary(educ_lmodel)
 `caret`.
 
 ```{r}
-# def_lmodel <- train(data = ___, default ~ ___, family = binomial(link = 'logit'), method = '___')
-# summary(___)
+def_lmodel <- train(data = def_train, default ~ ., family = binomial(link = 'logit'), method = 'glm')
+summary(def_lmodel)
 ```
 
 
@@ -216,11 +216,11 @@ head(educ_prob)
 Сохраните как предсказанные классы, так и их вероятности.
 
 ```{r}
-# def_pred <- predict(___, newdata = ___)
-# head(___)
+def_pred <- predict(def_lmodel, newdata = def_test)
+head(def_pred)
 
-# def_prob <- predict(___, newdata = ___, type = ___)
-# head(___)
+def_prob <- predict(def_lmodel, newdata = def_test, type = 'prob')
+head(def_prob)
 ```
 
 
@@ -237,7 +237,7 @@ confusionMatrix(data = educ_pred, reference = educ_test$y)
 Составьте матрицу ошибок для прогнозов модели `def_lmodel`.
 
 ```{r}
-# confusionMatrix(data = ___, reference = ___)
+confusionMatrix(data = def_pred, reference = def_test$default)
 ```
 
 
@@ -288,13 +288,13 @@ prSummary(educ_test_set, lev = levels(educ_test_set$obs)) # нужен паке�
 Выведите характеристики модели `def_lmodel` с помощью функций `twoClassSummary()` и `prSummary()`.
 
 ```{r}
-# def_test_set <- data.frame(___ = def_prob$No,
-#                            ___ = def_prob$Yes,
-#                            pred = ___,
-#                            obs = ___)
+def_test_set <- data.frame(No = def_prob$No, 
+                           Yes = def_prob$Yes,
+                           pred = def_pred,
+                           obs = def_test$default)
 
-# twoClassSummary(___, lev = levels(def_test_set$obs))
-# prSummary(___, lev = levels(___))
+twoClassSummary(def_test_set, lev = levels(def_test_set$obs))
+prSummary(def_test_set, lev = levels(def_test_set$obs))
 ```
 
 
@@ -320,13 +320,13 @@ ggplot(educ_test_set, aes(d = obs, m = L, color = gender)) +
 Сначала общую, а затем отдельно для студентов и всех остальных.
 
 ```{r}
-# ggplot(___, aes(d = ___, m = Yes)) +
-#   geom_roc(n.cuts = 0)
+ggplot(def_test_set, aes(d = obs, m = Yes)) +
+  geom_roc(n.cuts = 0)
 
-# def_test_set <- mutate(def_test_set, stud = ___)
+def_test_set <- mutate(def_test_set, stud = def_test$student)
 
-# ggplot(___, aes(d = ___, m = Yes, color = ___)) +
-#   geom_roc(___)
+ggplot(def_test_set, aes(d = obs, m = Yes, color = stud)) +
+  geom_roc(n.cuts = 0)
 ```
 
 
@@ -365,9 +365,9 @@ summary(tree_model)
 Постройте дерево для набора данных `def`, визуализируйте результат и нарисуйте картинку.
 
 ```{r}
-# def_tree <- train(data = ___, default ~ ., method = '___')
-# rpart.plot(___$finalModel)
-# summary(___)
+def_tree <- train(data = def_train, default ~ ., method = 'rpart2')
+rpart.plot(def_tree$finalModel)
+summary(def_tree)
 ```
 
 
@@ -385,9 +385,9 @@ confusionMatrix(educ_tree$yhat, educ_tree$y)
 оцените его качество, посмотрев на матрицу ошибок.
 
 ```{r}
-# def_tree_pred <- mutate(___,
-#   yhat = predict(___, ___))
-# confusionMatrix(___)
+def_tree_pred <- mutate(def_test,
+  yhat = predict(def_tree, def_test))
+confusionMatrix(def_tree_pred$yhat, def_tree_pred$y)
 ```
 
 
@@ -420,11 +420,11 @@ plot(fftree_model)
 Помните, что целевая переменная в нём закодирована как 'Yes' и 'No'.
 
 ```{r}
-# def_train2 <- mutate(___, defaultbin = ifelse(default == ___))
+def_train2 <- mutate(def_train, defaultbin = ifelse(default == 'Yes', 1, 0))
 
-# def_fftree <- FFTrees(formula = ___ ~ .,
-#                       data = ___)
-# plot(___)
+def_fftree <- FFTrees(formula = defaultbin ~ .,
+                      data = def_train2)
+plot(def_fftree)
 ```
 
 
@@ -475,11 +475,11 @@ ranger_model$finalModel
 выведите описание лучешй модели и постройте визуализацию.
 
 ```{r}
-# def_ranger <- train(___ ~ ., data = ___,
-#                     method = '___',
-#                     importance = 'impurity')
-# def_ranger$___
-# plot(___)
+def_ranger <- train(default ~ ., data = def_train,
+                    method = 'ranger',
+                    importance = 'impurity')
+def_ranger$finalModel
+plot(def_ranger)
 ```
 
 
@@ -499,9 +499,9 @@ plot(ranger_import)
 Выделите важность переменных в модели `def_ranger`.
 
 ```{r}
-# def_import <- varImp(___)
-# def_import
-# plot(___)
+def_import <- varImp(def_ranger)
+def_import
+plot(def_import)
 ```
 
 И, конечно, построить прогнозы:
