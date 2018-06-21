@@ -22,6 +22,9 @@ archives/sem_050.zip: docs/seminar_050.Rmd data/pulse.txt docs/hw_050.Rmd
 archives/sem_060.zip: docs/seminar_060.Rmd docs/seminar_060_tex.Rmd data/pulse.txt
 	zip -j archives/sem_060.zip docs/seminar_060.Rmd docs/seminar_060_tex.Rmd data/pulse.txt
 
+archives/sem_070.zip: docs/seminar_070.Rmd data/xAPI-Edu-Data.csv
+	zip -j archives/sem_070.zip docs/seminar_070.Rmd data/xAPI-Edu-Data.csv
+
 
 
 docs/seminar_010.html: docs/seminar_010.Rmd
