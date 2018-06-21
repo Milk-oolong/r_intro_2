@@ -1,0 +1,72 @@
+NAME: Data from the Television Game Show "Friend or Foe?"
+TYPE: Observational
+SIZE: 454 Observations, 14 Variables
+
+DESCRIPTIVE ABSTRACT:
+This dataset contains descriptive data of contestants on the game shoe "Friend or Foe?".  Information on the contestant's 
+race, sex, age, prize money, and playing strategy are included.  
+
+SOURCE:
+The data were obtained by taping episodes of "Friend or Foe?" from the Game Show Network.  No information was obtained 
+directly from the producers of the show.  A total of 76 episodes (28 from Season 1 and 48 from Season 2) were recorded 
+between August 2002 and March 2003.
+
+DESCRIPTION OF "FRIEND OR FOE?":
+The show consists of six strangers who pair up at the start of the show to form three teams of two. Each team is separated 
+into isolation chambers where all trivia rounds will be played. The newly formed teams have to work together and agree on 
+answers to trivia questions, in order to build a bank account. At the end of each round (there are 3 rounds total) the 
+lowest scoring team is eliminated. Before the team is dismissed, they enter the "Trust Box" where they decide how their 
+winnings up to that point are divided. In the Trust Box, each player has a button. No one else can see this button. Each 
+team enters the box, and the division of their winnings is dependant upon which button each player chooses. There are (3) 
+possible outcomes: 
+
+1) FRIEND - FRIEND If both players do not press the button (Choosing to be FRIENDS) the total winnings will be divided 
+equally between the two. 
+
+2) FRIEND - FOE If only one player presses the "FOE" button, he or she will walk away with the entire amount, leaving the 
+other player with nothing. 
+
+3) FOE - FOE If both players choose to press the "FOE" button, then all the money is lost, and both players walk away with 
+nothing. 
+
+In the third round, the remaining team has 60 seconds to answer 10 questions, as quickly as possible to accumulate more 
+money. Once three wrong answers are given, or the ten questions are answered, the round is over.    
+
+
+VARIABLE DESCRIPTIONS:
+Column	Description
+male	1 if Male; 0 otherwise
+white	1 if white; 0 otherwise
+age	Contestant's age in years
+foe	1 if contestant plays foe; 0 otherwise
+round2	1 if contestant eliminated in Round 2;0 otherwise
+round3	1 if contestant eliminated in Round 3;0 otherwise
+season2	1 if Season 2 show; 0 otherwise
+cash	The amount of cash in the trust box
+male1	1 if partner is male; 0 otherwise
+white1	1 if partner is white; 0 otherwise
+age1	Partner's age in years
+foe1	1 if partner plays foe; 0 otherwise
+win	Money won by contestant
+win1	Money won by partner
+
+Notes: If foe and foe1 are both 1, then both contestants receive zero prize money.  If foe and foe1 are both zero, the 
+amount of cash in the trust box is split evenly between the players.  If one of foe/foe1 is 1 and the other is 0, then the 
+contestant playing foe wins the entire trust box.  To distinguish between single-sex and mixed-sex games, add the binary 
+variables male and male1 together, where a value of 0 indicates a single-sex female game, value of 2 indicates a single-sex 
+male game, and a value of 1 indicates a mixed-sex game. This is a text file that is tab delimited.
+
+PEDAGOGICAL NOTES:
+The data are useful for a number of different statistical applications, form simple descriptive statistics and hypothesis 
+testing, to more advanced topics such as linear probability models and probit regression.  For econometrics courses, the 
+students' interest should be piqued, not only because they may have watched the show, but because the data are useful for 
+testing predictions about the prisoner's dilemma model.  
+
+
+SUBMITTED BY:
+David Kalist
+Department of Economics
+Shippensburg University
+Shippensburg, PA 17257
+dekali@wharf.ship.edu
+
