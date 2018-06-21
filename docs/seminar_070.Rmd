@@ -27,10 +27,12 @@ library(Ecdat) # много-много разных наборов данных
 library(ISLR) # ещё данные
 library(sandwich) # оценка Var для гетероскедастичности
 library(caret) # пакет для подбора параметров разных моделей
-library(FFtrees) # быстрые деревья
+library(FFTrees) # быстрые деревья
 library(margins) # для подсчёта предельных эффектов
 library(rpart.plot) # для картинок деревьев
 library(plotROC) # визуализация ROC-кривой
+library(ggeffects) # графики для предельных эффектов
+library(MLmetrics) # метрики качества
 ```
 
 
@@ -55,7 +57,7 @@ educ_logit <- mutate(educ, y = fct_collapse(Class, H = c('M', 'H')))
 И объявляем все текстовые переменные факторными:
 
 ```{r}
-educ_fct <- mutate_if(educ, is.character, factor)
+educ_fct <- mutate_if(educ_logit, is.character, factor)
 ```
 
 Разделим выборку на две части, обучающую и тестовую.
@@ -96,7 +98,27 @@ def <- Default
 
 # Логистическая регрессия
 
-TODO: теория
+С помощью метода максимального правдоподобия оценивается модель
+
+\[
+y_i =
+\begin{cases}
+1, \text{ если } y^*_i \geq 0; \\
+0, \text{ иначе.}
+\end{cases}
+\]
+
+\[
+y_i^* = \beta_1 + \beta_2 x_i + \beta_3 z_i + u_i,
+\]
+где $u_i$ имеет специальное логистическое распределение.
+
+Также модель можно записать в виде:
+
+\[
+\frac{\ln P(y_i = 1)}{\ln P(y_i = 0)} = \beta_1 + \beta_2 x_i + \beta_3 z_i
+\]
+
 
 Реализуем логистическую регрессию с помощью функции `glm`.
 Передадим ей набор данных `educ_train`, формулу и укажем специалный аргумент `family = binomial(link = 'logit')`.
@@ -107,7 +129,7 @@ educ_lmodel_glm <- glm(data = educ_train, y ~ gender + SectionID + raisedhands, 
 summary(educ_lmodel_glm)
 ```
 
-TODO: вопросы
+- Какие коэффициенты значимы на уровне значимости $\alpha = 0.01$?
 
 * Упражнение 2.
 
@@ -128,15 +150,17 @@ educ_margins <- margins(educ_lmodel_glm)
 summary(educ_margins)
 ```
 
-TODO: вопросы
+По умолчанию считается средний предельный эффект.
+Если нужно подсчитать предельный эффект для конкретного наблюдения,
+например, для среднего, то можно воспользоваться опцией `at`.
 
-Их тоже можно визуализировать!
+Предельные эффекты тоже можно визуализировать!
 Эта функция реализована в пакете `ggeffects` и называетя `ggpredict`.
 Ей нужно передать оценённую модель и указать переменные для визуализации в аргументе `terms`.
 
-```{r}
+```{r, eval=FALSE}
 pred_educ_vis <- ggpredict(educ_lmodel_glm, terms = c('raisedhands', 'gender'))
-plot(pred_educ_vis)
+pred_educ_vis <- plot(pred_educ_vis)
 ```
 
 * Упражнение 3.
@@ -182,7 +206,7 @@ summary(educ_lmodel)
 educ_pred <- predict(educ_lmodel, newdata = educ_test)
 head(educ_pred)
 
-educ_prdob <- predict(educ_lmodel, newdata = educ_test, type = 'prob')
+educ_prob <- predict(educ_lmodel, newdata = educ_test, type = 'prob')
 head(educ_prob)
 ```
 
@@ -219,18 +243,43 @@ confusionMatrix(data = educ_pred, reference = educ_test$y)
 
 Чтобы получичть и другие метрики качества для нашей модели, будем использовать функции `twoClassSummary()` и `prSummary()`.
 Первая возвращает значения ROC, специфичности и чувствительности.
-Вторая — AUC, полноту, точность и F-меру.
+
+Чувствительность (полнота) показывает долю правильно распознанных объектов отрицательного класса.
+\[
+TPR = TP / (TP + FN) = recall = sensitivity
+\]
+
+Специфичность показывает долю правильно распознанных объектов положительного класса.
+\[
+FPR = FP / (FP + TN) = 1 - specificity
+\]
+
+ROC — это площадь под кривой, построенной в осях доли правильных положительных ответов и
+доли неправильных положительных ответов в зависимости от значения порога для попадания
+в положительный класс.
+
+Вторая функция возвращает AUC, полноту, точность и F-меру.
+
+AUC — это площадь под кривой, построенной в осях точность-полнота.
+Точность — это доля объектов на самом деле принадлежащих к положительному классу
+среди всех объектов, которых модель отнесла к положительному классу.
+\[
+precision = TP / (TP + FP)
+\]
+
+А F-мера — это среднее гармоническое между точностью и полнотой.
+
 Однако обе функции требуют, чтобы во данных были столбцы с вероятностями классов под названиями самих этих классов, истинные ответы под названием `obs`, и бинарные предсказания, названные как `pred`.
-Поэтому создаим отедельный датафрейм `educ_test_set` со всеми результатами оценивания.
+Поэтому создадим отдельную таблицу `educ_test_set` со всеми результатами оценивания.
 
 ```{r}
 educ_test_set <- data.frame(H = educ_prob$H,
-                            L = educ_prob$L,
-                            pred = educ_pred,
-                            obs = educ_test$y)
+                        L = educ_prob$L,
+                        pred = educ_pred,
+                        obs = educ_test$y)
 glimpse(educ_test_set)
 
-twoClassSummary(educ_test_set, lev = levels(educ_test_set$obs))
+twoClassSummary(educ_test_set, lev = levels(educ_test_set$obs)) # don't work with tibble
 prSummary(educ_test_set, lev = levels(educ_test_set$obs)) # нужен пакет MLmetrics
 ```
 
@@ -482,14 +531,17 @@ ranger_model <- train(y ~ . - Class, data = educ_test,
                       na.action = na.omit,
                       importance = 'impurity',
                       tuneLength = 4)
-  ```
+```
 
 Или явно значения
 
- ```{r}
+```{r}
+grid <- expand.grid(mtry = c(5, 10), min.node.size = c(1, 5), splitrule = 'gini')
 
-
- ```
+ranger_model <- train(y ~ . - Class, data = educ_test,
+            tuneGrid = grid, method = "ranger", na.action = na.omit)
+ranger_model
+```
 
 
 
