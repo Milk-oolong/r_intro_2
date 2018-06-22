@@ -252,7 +252,7 @@ https://cran.r-project.org/web/packages/FFTrees/vignettes/guide.html
 - кросс-валидация
 - LASSO + кросс-валидация
 - кросс-валидация для дерева
-- кросс-валидация для k-means
+- кросс-валидация для knn :)
 - caret?
 
 
