@@ -1,6 +1,6 @@
 ---
 title: 'Семинар 7. Классификация'
-date: 'Июнь, 19, 2018'
+date: 'Июнь, 21, 2018'
 output:
   html_document:
     keep_md: no
@@ -33,6 +33,7 @@ library(rpart.plot) # для картинок деревьев
 library(plotROC) # визуализация ROC-кривой
 library(ggeffects) # графики для предельных эффектов
 library(MLmetrics) # метрики качества
+library(ranger) # строим деревья
 ```
 
 
@@ -288,7 +289,7 @@ prSummary(educ_test_set, lev = levels(educ_test_set$obs)) # нужен паке�
 Выведите характеристики модели `def_lmodel` с помощью функций `twoClassSummary()` и `prSummary()`.
 
 ```{r}
-def_test_set <- data.frame(No = def_prob$No, 
+def_test_set <- data.frame(No = def_prob$No,
                            Yes = def_prob$Yes,
                            pred = def_pred,
                            obs = def_test$default)

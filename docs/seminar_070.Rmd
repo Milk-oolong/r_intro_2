@@ -1,6 +1,6 @@
 ---
 title: 'Семинар 7. Классификация'
-date: 'Июнь, 19, 2018'
+date: 'Июнь, 21, 2018'
 output:
   html_document:
     keep_md: no
@@ -33,6 +33,7 @@ library(rpart.plot) # для картинок деревьев
 library(plotROC) # визуализация ROC-кривой
 library(ggeffects) # графики для предельных эффектов
 library(MLmetrics) # метрики качества
+library(ranger) # строим деревья
 ```
 
 
