@@ -32,8 +32,10 @@ library(plotROC) # визуализация ROC-кривой
 library(ggeffects) # графики для предельных эффектов
 library(MLmetrics) # метрики качества
 library(ranger) # случайный лес
+library(factoextra) # графики для кластеризации и pca
 library(elasticnet) # LASSO
 library(latex2exp) # формулы в подписях к графику
+library(distances) # расчет различных расстояний
 ```
 
 
@@ -576,6 +578,7 @@ protein_no_country <- protein %>%
 ```{r}
 protein_dist <- distances(protein_no_country,
                            normalize = "mahalanobize") %>% as.matrix()
+rownames(protein_dist) <- rownames(protein_no_country)
 protein_hcl <- hcut(protein_dist, k = 4)
 fviz_dend(protein_hcl,
           cex = 0.5, # размер подписи
