@@ -57,6 +57,8 @@ lang: ru-RU
 * Часть первая — курс [Communicating with data in tidyverse](https://www.datacamp.com/courses/communicating-with-data-in-the-tidyverse) на datacamp.com (4 балла)
 * Часть вторая — краткий анализ любого набора данных, [минимальные требования](http://bdemeshev.github.io/r_intro_2/hw_final.html) (6 баллов)
 
+**Дедлайн**: 5 июля 23:59
+
 
 Место: Шаболовка 26, 4428. Приносите свои ноутбуки!!!
 
