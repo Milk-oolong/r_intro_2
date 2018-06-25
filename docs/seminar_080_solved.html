@@ -154,10 +154,10 @@ library(distances) # расчет различных расстояний</code>
 <pre class="r"><code>educ &lt;- import('data/xAPI-Edu-Data.csv')
 skim(educ)</code></pre>
 <pre><code>## Skim summary statistics
-##  n obs: 480 
-##  n variables: 17 
-## 
-## Variable type: character 
+##  n obs: 480
+##  n variables: 17
+##
+## Variable type: character
 ##                  variable missing complete   n min max empty n_unique
 ##                     Class       0      480 480   1   1     0        3
 ##                    gender       0      480 480   1   1     0        2
@@ -172,8 +172,8 @@ skim(educ)</code></pre>
 ##                   StageID       0      480 480  10  12     0        3
 ##        StudentAbsenceDays       0      480 480   7   7     0        2
 ##                     Topic       0      480 480   2   9     0       12
-## 
-## Variable type: integer 
+##
+## Variable type: integer
 ##           variable missing complete   n  mean    sd p0   p25 p50 p75 p100
 ##  AnnouncementsView       0      480 480 37.92 26.61  0 14     33  58   98
 ##         Discussion       0      480 480 43.28 27.64  1 20     39  70   99
@@ -228,30 +228,30 @@ def_test &lt;- def[-train_rows, ]</code></pre>
   y ~ gender + SectionID + raisedhands, family = binomial(link = 'logit'),
   method = 'glm')
 summary(educ_lmodel)</code></pre>
-<pre><code>## 
+<pre><code>##
 ## Call:
 ## NULL
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -1.8009  -0.4881  -0.1803   0.6427   3.2122  
-## 
+##
+## Deviance Residuals:
+##     Min       1Q   Median       3Q      Max
+## -1.8009  -0.4881  -0.1803   0.6427   3.2122
+##
 ## Coefficients:
-##              Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)  0.745737   0.365406   2.041  0.04127 *  
-## genderM      1.004068   0.335521   2.993  0.00277 ** 
-## SectionIDB  -0.348347   0.319917  -1.089  0.27621    
-## SectionIDC  -0.702561   0.601374  -1.168  0.24270    
+##              Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)  0.745737   0.365406   2.041  0.04127 *
+## genderM      1.004068   0.335521   2.993  0.00277 **
+## SectionIDB  -0.348347   0.319917  -1.089  0.27621
+## SectionIDC  -0.702561   0.601374  -1.168  0.24270
 ## raisedhands -0.069383   0.008099  -8.567  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
+##
 ## (Dispersion parameter for binomial family taken to be 1)
-## 
+##
 ##     Null deviance: 445.18  on 384  degrees of freedom
 ## Residual deviance: 271.91  on 380  degrees of freedom
 ## AIC: 281.91
-## 
+##
 ## Number of Fisher Scoring iterations: 6</code></pre>
 <ul>
 <li>Упражнение 2.</li>
@@ -259,29 +259,29 @@ summary(educ_lmodel)</code></pre>
 <p>Оцените заново логистическую регессию по набору данных <code>def</code> с помощью функций пакета <code>caret</code>.</p>
 <pre class="r"><code>def_lmodel &lt;- train(data = def_train, default ~ ., family = binomial(link = 'logit'), method = 'glm')
 summary(def_lmodel)</code></pre>
-<pre><code>## 
+<pre><code>##
 ## Call:
 ## NULL
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -2.5134  -0.1415  -0.0537  -0.0193   3.6837  
-## 
+##
+## Deviance Residuals:
+##     Min       1Q   Median       3Q      Max
+## -2.5134  -0.1415  -0.0537  -0.0193   3.6837
+##
 ## Coefficients:
-##               Estimate Std. Error z value Pr(&gt;|z|)    
+##               Estimate Std. Error z value Pr(&gt;|z|)
 ## (Intercept) -1.101e+01  5.951e-01 -18.498   &lt;2e-16 ***
-## studentYes  -6.193e-01  2.847e-01  -2.176   0.0296 *  
+## studentYes  -6.193e-01  2.847e-01  -2.176   0.0296 *
 ## balance      5.786e-03  2.810e-04  20.587   &lt;2e-16 ***
-## income       5.782e-06  9.853e-06   0.587   0.5573    
+## income       5.782e-06  9.853e-06   0.587   0.5573
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
+##
 ## (Dispersion parameter for binomial family taken to be 1)
-## 
+##
 ##     Null deviance: 2050.6  on 7000  degrees of freedom
 ## Residual deviance: 1098.9  on 6997  degrees of freedom
 ## AIC: 1106.9
-## 
+##
 ## Number of Fisher Scoring iterations: 8</code></pre>
 <p>Посторим прогнозы модели для тестовых данных <code>educ_test</code>. Для этого будем использовать функцию <code>predict</code>, которой передадим оценённую модель <code>educ_lmodel</code>. В переменной <code>educ_predz</code> уже будут лежать предсказанные классы. Чтобы получить их вероятности, нужно добавить аргумент <code>type = 'prob'</code>.</p>
 <pre class="r"><code>educ_pred &lt;- predict(educ_lmodel, newdata = educ_test)
@@ -317,30 +317,30 @@ head(def_prob)</code></pre>
 <p>Теперь мы можем посмотреть на матрицу ошибок и узнать, насколько хорошую модель мы оценили. Для этого будем использовть функцию <code>confusionMatrix</code> из пакета <code>caret</code>. В качестве аргумента <code>data</code> нужно указать предсказанные значения, а в <code>reference</code> — правильные ответы.</p>
 <pre class="r"><code>confusionMatrix(data = educ_pred, reference = educ_test$y)</code></pre>
 <pre><code>## Confusion Matrix and Statistics
-## 
+##
 ##           Reference
 ## Prediction  H  L
 ##          H 65  8
 ##          L  5 17
-##                                           
-##                Accuracy : 0.8632          
+##
+##                Accuracy : 0.8632
 ##                  95% CI : (0.7774, 0.9251)
-##     No Information Rate : 0.7368          
-##     P-Value [Acc &gt; NIR] : 0.002303        
-##                                           
-##                   Kappa : 0.633           
-##  Mcnemar's Test P-Value : 0.579100        
-##                                           
-##             Sensitivity : 0.9286          
-##             Specificity : 0.6800          
-##          Pos Pred Value : 0.8904          
-##          Neg Pred Value : 0.7727          
-##              Prevalence : 0.7368          
-##          Detection Rate : 0.6842          
-##    Detection Prevalence : 0.7684          
-##       Balanced Accuracy : 0.8043          
-##                                           
-##        'Positive' Class : H               
+##     No Information Rate : 0.7368
+##     P-Value [Acc &gt; NIR] : 0.002303
+##
+##                   Kappa : 0.633
+##  Mcnemar's Test P-Value : 0.579100
+##
+##             Sensitivity : 0.9286
+##             Specificity : 0.6800
+##          Pos Pred Value : 0.8904
+##          Neg Pred Value : 0.7727
+##              Prevalence : 0.7368
+##          Detection Rate : 0.6842
+##    Detection Prevalence : 0.7684
+##       Balanced Accuracy : 0.8043
+##
+##        'Positive' Class : H
 ## </code></pre>
 <ul>
 <li>Упражнение 4.</li>
@@ -348,30 +348,30 @@ head(def_prob)</code></pre>
 <p>Составьте матрицу ошибок для прогнозов модели <code>def_lmodel</code>.</p>
 <pre class="r"><code>confusionMatrix(data = def_pred, reference = def_test$default)</code></pre>
 <pre><code>## Confusion Matrix and Statistics
-## 
+##
 ##           Reference
 ## Prediction   No  Yes
 ##        No  2885   65
 ##        Yes   15   34
-##                                           
-##                Accuracy : 0.9733          
+##
+##                Accuracy : 0.9733
 ##                  95% CI : (0.9669, 0.9788)
-##     No Information Rate : 0.967           
-##     P-Value [Acc &gt; NIR] : 0.02642         
-##                                           
-##                   Kappa : 0.4474          
-##  Mcnemar's Test P-Value : 4.293e-08       
-##                                           
-##             Sensitivity : 0.9948          
-##             Specificity : 0.3434          
-##          Pos Pred Value : 0.9780          
-##          Neg Pred Value : 0.6939          
-##              Prevalence : 0.9670          
-##          Detection Rate : 0.9620          
-##    Detection Prevalence : 0.9837          
-##       Balanced Accuracy : 0.6691          
-##                                           
-##        'Positive' Class : No              
+##     No Information Rate : 0.967
+##     P-Value [Acc &gt; NIR] : 0.02642
+##
+##                   Kappa : 0.4474
+##  Mcnemar's Test P-Value : 4.293e-08
+##
+##             Sensitivity : 0.9948
+##             Specificity : 0.3434
+##          Pos Pred Value : 0.9780
+##          Neg Pred Value : 0.6939
+##              Prevalence : 0.9670
+##          Detection Rate : 0.9620
+##    Detection Prevalence : 0.9837
+##       Balanced Accuracy : 0.6691
+##
+##        'Positive' Class : No
 ## </code></pre>
 <p>Чтобы получичть и другие метрики качества для нашей модели, будем использовать функции <code>twoClassSummary()</code> и <code>prSummary()</code>. Первая возвращает значения ROC, специфичности и чувствительности.</p>
 <p>Чувствительность (полнота) показывает долю правильно распознанных объектов отрицательного класса. <span class="math display">\[
@@ -401,10 +401,10 @@ glimpse(educ_test_set)</code></pre>
 <pre class="r"><code>levs &lt;- levels(educ_test_set$obs)
 
 twoClassSummary(educ_test_set, lev = levs) # don't work with tibble</code></pre>
-<pre><code>##       ROC      Sens      Spec 
+<pre><code>##       ROC      Sens      Spec
 ## 0.9037143 0.9285714 0.6800000</code></pre>
 <pre class="r"><code>prSummary(educ_test_set, lev = levs) # нужен пакет MLmetrics</code></pre>
-<pre><code>##       AUC Precision    Recall         F 
+<pre><code>##       AUC Precision    Recall         F
 ## 0.9300243 0.8904110 0.9285714 0.9090909</code></pre>
 <ul>
 <li><p>Что находится в векторе <code>levs</code>?</p></li>
@@ -417,10 +417,10 @@ twoClassSummary(educ_test_set, lev = levs) # don't work with tibble</code></pre>
                            obs = def_test$default)
 
 twoClassSummary(def_test_set, lev = levels(def_test_set$obs))</code></pre>
-<pre><code>##       ROC      Sens      Spec 
+<pre><code>##       ROC      Sens      Spec
 ## 0.9495472 0.9948276 0.3434343</code></pre>
 <pre class="r"><code>prSummary(def_test_set, lev = levels(def_test_set$obs))</code></pre>
-<pre><code>##       AUC Precision    Recall         F 
+<pre><code>##       AUC Precision    Recall         F
 ## 0.9977132 0.9779661 0.9948276 0.9863248</code></pre>
 <p>Почти все метрики можно визуализировать! Но для примера мы построим ROC-кривую. Для этого вдобавок к базовому слою <code>ggplot</code> мы будем использовать слой <code>geom_roc</code> из пакета <code>plotROC</code>. В эстетиках нужно указать аргументы <code>d</code> — истинные значения — и <code>m</code> — метки положительного класса. Если добавить аргумент <code>color</code>, то можно получить разные ROC-кривые по категориям какой-нибудь переменной.</p>
 <pre class="r"><code>ggplot(educ_test_set, aes(d = obs, m = L)) +
@@ -494,30 +494,30 @@ plot(def_fftree)</code></pre>
 <li>количество деревьев;</li>
 </ul>
 <p>Посмотрим на все вариации случайного леса, которые перебрал <code>ranger</code>.</p>
-<pre class="r"><code>ranger_model &lt;- train(y ~ ., data = educ_test,
+<pre class="r"><code>ranger_model &lt;- train(y ~ ., data = educ_train,
                       method = 'ranger',
                       na.action = na.omit,
                       importance = 'impurity')
 ranger_model</code></pre>
-<pre><code>## Random Forest 
-## 
+<pre><code>## Random Forest
+##
 ## 95 samples
 ## 16 predictors
-##  2 classes: 'H', 'L' 
-## 
+##  2 classes: 'H', 'L'
+##
 ## No pre-processing
-## Resampling: Bootstrapped (25 reps) 
-## Summary of sample sizes: 95, 95, 95, 95, 95, 95, ... 
+## Resampling: Bootstrapped (25 reps)
+## Summary of sample sizes: 95, 95, 95, 95, 95, 95, ...
 ## Resampling results across tuning parameters:
-## 
-##   mtry  splitrule   Accuracy   Kappa    
+##
+##   mtry  splitrule   Accuracy   Kappa
 ##    2    gini        0.8061383  0.3205435
 ##    2    extratrees  0.7790737  0.1928847
 ##   31    gini        0.9318436  0.8222852
 ##   31    extratrees  0.9415010  0.8421370
 ##   60    gini        0.9074774  0.7563751
 ##   60    extratrees  0.9247374  0.7964320
-## 
+##
 ## Tuning parameter 'min.node.size' was held constant at a value of 1
 ## Accuracy was used to select the optimal model using the largest value.
 ## The final values used for the model were mtry = 31, splitrule =
@@ -538,18 +538,18 @@ ranger_model</code></pre>
 <p>И более подробно про наилучшую:</p>
 <pre class="r"><code>ranger_model$finalModel</code></pre>
 <pre><code>## Ranger result
-## 
+##
 ## Call:
-##  ranger::ranger(dependent.variable.name = &quot;.outcome&quot;, data = x,      mtry = param$mtry, min.node.size = param$min.node.size, splitrule = as.character(param$splitrule),      write.forest = TRUE, probability = classProbs, ...) 
-## 
-## Type:                             Classification 
-## Number of trees:                  500 
-## Sample size:                      95 
-## Number of independent variables:  60 
-## Mtry:                             31 
-## Target node size:                 1 
-## Variable importance mode:         impurity 
-## Splitrule:                        extratrees 
+##  ranger::ranger(dependent.variable.name = &quot;.outcome&quot;, data = x,      mtry = param$mtry, min.node.size = param$min.node.size, splitrule = as.character(param$splitrule),      write.forest = TRUE, probability = classProbs, ...)
+##
+## Type:                             Classification
+## Number of trees:                  500
+## Sample size:                      95
+## Number of independent variables:  60
+## Mtry:                             31
+## Target node size:                 1
+## Variable importance mode:         impurity
+## Splitrule:                        extratrees
 ## OOB prediction error:             4.21 %</code></pre>
 <ul>
 <li>Упражнение 8.</li>
@@ -561,18 +561,18 @@ ranger_model</code></pre>
 <pre><code>## note: only 2 unique complexity parameters in default grid. Truncating the grid to 2 .</code></pre>
 <pre class="r"><code>def_ranger$finalModel</code></pre>
 <pre><code>## Ranger result
-## 
+##
 ## Call:
-##  ranger::ranger(dependent.variable.name = &quot;.outcome&quot;, data = x,      mtry = param$mtry, min.node.size = param$min.node.size, splitrule = as.character(param$splitrule),      write.forest = TRUE, probability = classProbs, ...) 
-## 
-## Type:                             Classification 
-## Number of trees:                  500 
-## Sample size:                      7001 
-## Number of independent variables:  3 
-## Mtry:                             2 
-## Target node size:                 1 
-## Variable importance mode:         impurity 
-## Splitrule:                        extratrees 
+##  ranger::ranger(dependent.variable.name = &quot;.outcome&quot;, data = x,      mtry = param$mtry, min.node.size = param$min.node.size, splitrule = as.character(param$splitrule),      write.forest = TRUE, probability = classProbs, ...)
+##
+## Type:                             Classification
+## Number of trees:                  500
+## Sample size:                      7001
+## Number of independent variables:  3
+## Mtry:                             2
+## Target node size:                 1
+## Variable importance mode:         impurity
+## Splitrule:                        extratrees
 ## OOB prediction error:             3.04 %</code></pre>
 <pre class="r"><code>plot(def_ranger,
 xlab = 'Количество случайно отбираемых регрессоров',
@@ -585,9 +585,9 @@ auto.key = list(title = 'Алгоритм разбиения ветки', cex.ti
 <pre class="r"><code>ranger_import &lt;- varImp(ranger_model)
 ranger_import</code></pre>
 <pre><code>## ranger variable importance
-## 
+##
 ##   only 20 most important variables shown (out of 60)
-## 
+##
 ##                              Overall
 ## StudentAbsenceDaysUnder-7    100.000
 ## VisITedResources              98.987
@@ -621,7 +621,7 @@ ranger_import</code></pre>
 <pre class="r"><code>def_import &lt;- varImp(def_ranger)
 def_import</code></pre>
 <pre><code>## ranger variable importance
-## 
+##
 ##            Overall
 ## balance     100.00
 ## income       47.86
@@ -633,30 +633,30 @@ def_import</code></pre>
   yhat = predict(ranger_model, educ_test, na.action = na.pass))
 confusionMatrix(educ_ranger$yhat, educ_ranger$y)</code></pre>
 <pre><code>## Confusion Matrix and Statistics
-## 
+##
 ##           Reference
 ## Prediction  H  L
 ##          H 70  0
 ##          L  0 25
-##                                      
-##                Accuracy : 1          
+##
+##                Accuracy : 1
 ##                  95% CI : (0.9619, 1)
-##     No Information Rate : 0.7368     
-##     P-Value [Acc &gt; NIR] : 2.515e-13  
-##                                      
-##                   Kappa : 1          
-##  Mcnemar's Test P-Value : NA         
-##                                      
-##             Sensitivity : 1.0000     
-##             Specificity : 1.0000     
-##          Pos Pred Value : 1.0000     
-##          Neg Pred Value : 1.0000     
-##              Prevalence : 0.7368     
-##          Detection Rate : 0.7368     
-##    Detection Prevalence : 0.7368     
-##       Balanced Accuracy : 1.0000     
-##                                      
-##        'Positive' Class : H          
+##     No Information Rate : 0.7368
+##     P-Value [Acc &gt; NIR] : 2.515e-13
+##
+##                   Kappa : 1
+##  Mcnemar's Test P-Value : NA
+##
+##             Sensitivity : 1.0000
+##             Specificity : 1.0000
+##          Pos Pred Value : 1.0000
+##          Neg Pred Value : 1.0000
+##              Prevalence : 0.7368
+##          Detection Rate : 0.7368
+##    Detection Prevalence : 0.7368
+##       Balanced Accuracy : 1.0000
+##
+##        'Positive' Class : H
 ## </code></pre>
 <p>По умолчанию, пакет <code>caret</code> сам решает, сколько значений параметров перебирать и какие конкретно.</p>
 <p>Список перебираемых параметров:</p>
@@ -682,23 +682,23 @@ confusionMatrix(educ_ranger$yhat, educ_ranger$y)</code></pre>
 ranger_model &lt;- train(y ~ ., data = educ_test,
             tuneGrid = grid, method = &quot;ranger&quot;, na.action = na.omit)
 ranger_model</code></pre>
-<pre><code>## Random Forest 
-## 
+<pre><code>## Random Forest
+##
 ## 95 samples
 ## 16 predictors
-##  2 classes: 'H', 'L' 
-## 
+##  2 classes: 'H', 'L'
+##
 ## No pre-processing
-## Resampling: Bootstrapped (25 reps) 
-## Summary of sample sizes: 95, 95, 95, 95, 95, 95, ... 
+## Resampling: Bootstrapped (25 reps)
+## Summary of sample sizes: 95, 95, 95, 95, 95, 95, ...
 ## Resampling results across tuning parameters:
-## 
-##   mtry  min.node.size  Accuracy   Kappa    
+##
+##   mtry  min.node.size  Accuracy   Kappa
 ##    5    1              0.9491514  0.8653158
 ##    5    5              0.9398125  0.8406229
 ##   10    1              0.9557921  0.8834987
 ##   10    5              0.9527873  0.8744610
-## 
+##
 ## Tuning parameter 'splitrule' was held constant at a value of gini
 ## Accuracy was used to select the optimal model using the largest value.
 ## The final values used for the model were mtry = 10, splitrule = gini
@@ -716,22 +716,22 @@ educ_knn_fit &lt;- train(y ~., data = educ_train, method = 'knn',
                       preProcess = c('center', 'scale'))
 
 educ_knn_fit</code></pre>
-<pre><code>## k-Nearest Neighbors 
-## 
+<pre><code>## k-Nearest Neighbors
+##
 ## 385 samples
 ##  16 predictor
-##   2 classes: 'H', 'L' 
-## 
-## Pre-processing: centered (60), scaled (60) 
-## Resampling: Cross-Validated (5 fold) 
-## Summary of sample sizes: 308, 308, 308, 309, 307 
+##   2 classes: 'H', 'L'
+##
+## Pre-processing: centered (60), scaled (60)
+## Resampling: Cross-Validated (5 fold)
+## Summary of sample sizes: 308, 308, 308, 309, 307
 ## Resampling results across tuning parameters:
-## 
-##   k  Accuracy   Kappa    
+##
+##   k  Accuracy   Kappa
 ##   5  0.8285960  0.5182881
 ##   7  0.8129081  0.4794467
 ##   9  0.8259644  0.5090629
-## 
+##
 ## Accuracy was used to select the optimal model using the largest value.
 ## The final value used for the model was k = 5.</code></pre>
 <p>Визуализируем долю правильных ответов в зависимости от числа соседей.</p>
@@ -755,30 +755,30 @@ plot(def_knn_fit, xlab = 'Число соседей',
 <pre class="r"><code>educ_knn_predict &lt;- predict(educ_knn_fit, newdata = educ_test)
 confusionMatrix(educ_knn_predict, educ_test$y)</code></pre>
 <pre><code>## Confusion Matrix and Statistics
-## 
+##
 ##           Reference
 ## Prediction  H  L
 ##          H 65  7
 ##          L  5 18
-##                                          
-##                Accuracy : 0.8737         
+##
+##                Accuracy : 0.8737
 ##                  95% CI : (0.7897, 0.933)
-##     No Information Rate : 0.7368         
-##     P-Value [Acc &gt; NIR] : 0.0009533      
-##                                          
-##                   Kappa : 0.6657         
-##  Mcnemar's Test P-Value : 0.7728300      
-##                                          
-##             Sensitivity : 0.9286         
-##             Specificity : 0.7200         
-##          Pos Pred Value : 0.9028         
-##          Neg Pred Value : 0.7826         
-##              Prevalence : 0.7368         
-##          Detection Rate : 0.6842         
-##    Detection Prevalence : 0.7579         
-##       Balanced Accuracy : 0.8243         
-##                                          
-##        'Positive' Class : H              
+##     No Information Rate : 0.7368
+##     P-Value [Acc &gt; NIR] : 0.0009533
+##
+##                   Kappa : 0.6657
+##  Mcnemar's Test P-Value : 0.7728300
+##
+##             Sensitivity : 0.9286
+##             Specificity : 0.7200
+##          Pos Pred Value : 0.9028
+##          Neg Pred Value : 0.7826
+##              Prevalence : 0.7368
+##          Detection Rate : 0.6842
+##    Detection Prevalence : 0.7579
+##       Balanced Accuracy : 0.8243
+##
+##        'Positive' Class : H
 ## </code></pre>
 <ul>
 <li>Упражнение 11.</li>
@@ -787,30 +787,30 @@ confusionMatrix(educ_knn_predict, educ_test$y)</code></pre>
 <pre class="r"><code>def_knn_pred &lt;- predict(def_knn_fit, newdata = def_test)
 confusionMatrix(def_knn_pred, def_test$default)</code></pre>
 <pre><code>## Confusion Matrix and Statistics
-## 
+##
 ##           Reference
 ## Prediction   No  Yes
 ##        No  2879   64
 ##        Yes   21   35
-##                                           
-##                Accuracy : 0.9717          
+##
+##                Accuracy : 0.9717
 ##                  95% CI : (0.9651, 0.9773)
-##     No Information Rate : 0.967           
-##     P-Value [Acc &gt; NIR] : 0.08142         
-##                                           
-##                   Kappa : 0.4382          
-##  Mcnemar's Test P-Value : 5.225e-06       
-##                                           
-##             Sensitivity : 0.9928          
-##             Specificity : 0.3535          
-##          Pos Pred Value : 0.9783          
-##          Neg Pred Value : 0.6250          
-##              Prevalence : 0.9670          
-##          Detection Rate : 0.9600          
-##    Detection Prevalence : 0.9813          
-##       Balanced Accuracy : 0.6731          
-##                                           
-##        'Positive' Class : No              
+##     No Information Rate : 0.967
+##     P-Value [Acc &gt; NIR] : 0.08142
+##
+##                   Kappa : 0.4382
+##  Mcnemar's Test P-Value : 5.225e-06
+##
+##             Sensitivity : 0.9928
+##             Specificity : 0.3535
+##          Pos Pred Value : 0.9783
+##          Neg Pred Value : 0.6250
+##              Prevalence : 0.9670
+##          Detection Rate : 0.9600
+##    Detection Prevalence : 0.9813
+##       Balanced Accuracy : 0.6731
+##
+##        'Positive' Class : No
 ## </code></pre>
 </div>
 <div id="---lasso" class="section level1">
@@ -824,23 +824,23 @@ educ_lasso_fit &lt;- train(raisedhands ~ ., data = educ_train,
                         method = 'lasso', trControl = trctrl,
                         tuneGrid = expand.grid(.fraction = c(0.1, 0.2, 0.3, 0.5, 0.7)))
 educ_lasso_fit</code></pre>
-<pre><code>## The lasso 
-## 
+<pre><code>## The lasso
+##
 ## 385 samples
 ##  16 predictor
-## 
+##
 ## No pre-processing
-## Resampling: Cross-Validated (5 fold) 
-## Summary of sample sizes: 308, 306, 309, 308, 309 
+## Resampling: Cross-Validated (5 fold)
+## Summary of sample sizes: 308, 306, 309, 308, 309
 ## Resampling results across tuning parameters:
-## 
-##   fraction  RMSE      Rsquared   MAE     
+##
+##   fraction  RMSE      Rsquared   MAE
 ##   0.1       20.03849  0.6132161  16.62564
 ##   0.2       19.10408  0.6245219  15.15029
 ##   0.3       19.37723  0.6115496  15.32103
 ##   0.5       19.96130  0.5897134  15.93492
 ##   0.7       20.11173  0.5839026  16.10837
-## 
+##
 ## RMSE was used to select the optimal model using the smallest value.
 ## The final value used for the model was fraction = 0.2.</code></pre>
 <pre class="r"><code>plot(educ_lasso_fit, xlab = TeX('Доля $R^2$ от МНК'), ylab = 'RMSE', main = 'LASSO регрессия')</code></pre>
@@ -858,14 +858,14 @@ educ_lasso_fit</code></pre>
 <pre class="r"><code>protein &lt;- import('data/Europenaprotein.csv')
 skim(protein)</code></pre>
 <pre><code>## Skim summary statistics
-##  n obs: 25 
-##  n variables: 10 
-## 
-## Variable type: character 
+##  n obs: 25
+##  n variables: 10
+##
+## Variable type: character
 ##  variable missing complete  n min max empty n_unique
 ##   Country       0       25 25   2  14     0       25
-## 
-## Variable type: numeric 
+##
+## Variable type: numeric
 ##   variable missing complete  n  mean    sd   p0  p25  p50  p75 p100
 ##    Cereals       0       25 25 32.25 10.97 18.6 24.3 28   40.1 56.7
 ##       Eggs       0       25 25  2.94  1.12  0.5  2.7  2.9  3.7  4.7
@@ -873,9 +873,9 @@ skim(protein)</code></pre>
 ##     Fr&amp;Veg       0       25 25  4.14  1.8   1.4  2.9  3.8  4.9  7.9
 ##       Milk       0       25 25 17.11  7.11  4.9 11.1 17.6 23.3 33.7
 ##       Nuts       0       25 25  3.07  1.99  0.7  1.5  2.4  4.7  7.8
-##    RedMeat       0       25 25  9.83  3.35  4.4  7.8  9.5 10.6 18  
+##    RedMeat       0       25 25  9.83  3.35  4.4  7.8  9.5 10.6 18
 ##     Starch       0       25 25  4.28  1.63  0.6  3.1  4.7  5.7  6.5
-##  WhiteMeat       0       25 25  7.9   3.69  1.4  4.9  7.8 10.8 14  
+##  WhiteMeat       0       25 25  7.9   3.69  1.4  4.9  7.8 10.8 14
 ##      hist
 ##  ▅▇▁▂▂▁▁▂
 ##  ▁▂▁▁▇▂▃▂

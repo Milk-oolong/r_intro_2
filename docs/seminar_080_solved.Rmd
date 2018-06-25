@@ -336,7 +336,7 @@ plot(def_fftree)
 Посмотрим на все вариации случайного леса, которые перебрал `ranger`.
 
 ```{r}
-ranger_model <- train(y ~ ., data = educ_test,
+ranger_model <- train(y ~ ., data = educ_train,
                       method = 'ranger',
                       na.action = na.omit,
                       importance = 'impurity')
