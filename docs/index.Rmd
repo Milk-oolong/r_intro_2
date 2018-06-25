@@ -51,6 +51,7 @@ lang: ru-RU
 * Семинар 8, 25 июня. Кросс-валидация.
 
     - Условия и данные [sem_080.zip](https://github.com/bdemeshev/r_intro_2/raw/master/archives/sem_080.zip);
+    - [Решение семинара](http://bdemeshev.github.io/r_intro_2/seminar_080_solved.html);
 
 * Семинар 9, 28 июня. Разное и ответы на вопросы :)
 

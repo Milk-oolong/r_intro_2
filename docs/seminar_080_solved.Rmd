@@ -42,7 +42,7 @@ library(distances) # расчет различных расстояний
 Снова импортируем набор данных по успеваемости студентов и смотрим на него :)
 
 ```{r}
-educ <- import('xAPI-Edu-Data.csv')
+educ <- import('data/xAPI-Edu-Data.csv')
 skim(educ)
 ```
 
@@ -94,11 +94,11 @@ educ_test <- educ_fct[-train_rows, ]
 
 ```{r}
 def <- Default
-# glimpse(___)
-# set.seed(___)
-# train_rows <- createDataPartition(___, p = ___, list = FALSE)
-# def_train <- def[___, ]
-# def_test <- __[-___, ]
+glimpse(def)
+set.seed(777)
+train_rows <- createDataPartition(def$default, p = 0.7, list = FALSE)
+def_train <- def[train_rows, ]
+def_test <- def[-train_rows, ]
 ```
 
 
@@ -116,12 +116,11 @@ summary(educ_lmodel)
 
 * Упражнение 2.
 
-Оцените заново логистическую регессию по набору данных `def` с помощью функций пакета
-`caret`.
+Оцените заново логистическую регессию по набору данных `def` с помощью функций пакета `caret`.
 
 ```{r}
-# def_lmodel <- train(data = ___, default ~ ___, family = binomial(link = 'logit'), method = '___')
-# summary(___)
+def_lmodel <- train(data = def_train, default ~ ., family = binomial(link = 'logit'), method = 'glm')
+summary(def_lmodel)
 ```
 
 
@@ -144,11 +143,11 @@ head(educ_prob)
 Сохраните как предсказанные классы, так и их вероятности.
 
 ```{r}
-# def_pred <- predict(___, newdata = ___)
-# head(___)
+def_pred <- predict(def_lmodel, newdata = def_test)
+head(def_pred)
 
-# def_prob <- predict(___, newdata = ___, type = ___)
-# head(___)
+def_prob <- predict(def_lmodel, newdata = def_test, type = 'prob')
+head(def_prob)
 ```
 
 
@@ -165,7 +164,7 @@ confusionMatrix(data = educ_pred, reference = educ_test$y)
 Составьте матрицу ошибок для прогнозов модели `def_lmodel`.
 
 ```{r}
-# confusionMatrix(data = ___, reference = ___)
+confusionMatrix(data = def_pred, reference = def_test$default)
 ```
 
 
@@ -221,13 +220,13 @@ prSummary(educ_test_set, lev = levs) # нужен пакет MLmetrics
 Выведите характеристики модели `def_lmodel` с помощью функций `twoClassSummary()` и `prSummary()`.
 
 ```{r}
-# def_test_set <- data.frame(___ = def_prob$No,
-#                            ___ = def_prob$Yes,
-#                            pred = ___,
-#                            obs = ___)
+def_test_set <- data.frame(No = def_prob$No,
+                           Yes = def_prob$Yes,
+                           pred = def_pred,
+                           obs = def_test$default)
 
-# twoClassSummary(___, lev = levels(def_test_set$obs))
-# prSummary(___, lev = levels(___))
+twoClassSummary(def_test_set, lev = levels(def_test_set$obs))
+prSummary(def_test_set, lev = levels(def_test_set$obs))
 ```
 
 
@@ -260,13 +259,13 @@ ggplot(educ_test_set, aes(d = obs, m = L, color = gender)) +
 Сначала общую, а затем отдельно для студентов и всех остальных.
 
 ```{r}
-# ggplot(___, aes(d = ___, m = Yes)) +
-#   geom_roc(n.cuts = 0)
+ggplot(def_test_set, aes(d = obs, m = Yes)) +
+  geom_roc(n.cuts = 0)
 
-# def_test_set <- mutate(def_test_set, stud = ___)
+def_test_set <- mutate(def_test_set, stud = def_test$student)
 
-# ggplot(___, aes(d = ___, m = Yes, color = ___)) +
-#   geom_roc(___)
+ggplot(def_test_set, aes(d = obs, m = Yes, color = stud)) +
+  geom_roc(n.cuts = 0)
 ```
 
 
@@ -285,7 +284,7 @@ ggplot(educ_test_set, aes(d = obs, m = L, color = gender)) +
 Увы, пакет принимает на вход только 0/1 в зависимой переменной, поэтому заменим названия категорий на числа:
 
 ```{r}
-educ_train2 <- mutate(educ_train, ybin = ifelse(y == 'H', 1, 0))
+educ_train2 <- mutate(educ_train, ybin = ifelse(y == 'H', 1, 0)) 
 ```
 
 И построим картинку для быстрого и стройного дерева:
@@ -302,11 +301,11 @@ plot(fftree_model)
 Помните, что целевая переменная в нём закодирована как 'Yes' и 'No'.
 
 ```{r}
-# def_train2 <- mutate(___, defaultbin = ifelse(default == ___))
+def_train2 <- mutate(def_train, defaultbin = ifelse(default == 'Yes', 1, 0))
 
-# def_fftree <- FFTrees(formula = ___ ~ .,
-#                       data = ___)
-# plot(___)
+def_fftree <- FFTrees(formula = defaultbin ~ .,
+                      data = def_train2)
+plot(def_fftree)
 ```
 
 
@@ -337,7 +336,7 @@ plot(fftree_model)
 Посмотрим на все вариации случайного леса, которые перебрал `ranger`.
 
 ```{r}
-ranger_model <- train(y ~ . - Class, data = educ_test,
+ranger_model <- train(y ~ ., data = educ_test,
                       method = 'ranger',
                       na.action = na.omit,
                       importance = 'impurity')
@@ -368,15 +367,15 @@ ranger_model$finalModel
 выведите описание лучшей модели и постройте визуализацию.
 
 ```{r}
-# def_ranger <- train(___ ~ ., data = ___,
-#                     method = '___',
-#                     importance = 'impurity')
-# def_ranger$___
-# plot(___,
-# xlab = 'Количество случайно отбираемых регрессоров',
-# ylab = 'Точность (бутстрэп оценка)',
-# main = 'Зависимость точности от настроек дерева',
-# auto.key = list(title = 'Алгоритм разбиения ветки', cex.title = 1))
+def_ranger <- train(default ~ ., data = def_train,
+                    method = 'ranger',
+                    importance = 'impurity')
+def_ranger$finalModel
+plot(def_ranger,
+xlab = 'Количество случайно отбираемых регрессоров',
+ylab = 'Точность (бутстрэп оценка)',
+main = 'Зависимость точности от настроек дерева',
+auto.key = list(title = 'Алгоритм разбиения ветки', cex.title = 1))
 ```
 
 Построить информативно на графике все сотни или тысячи деревьев невозможно.
@@ -398,9 +397,9 @@ TODO: или суммарное?
 Выделите важность переменных в модели `def_ranger`.
 
 ```{r}
-# def_import <- varImp(___)
-# def_import
-# plot(___)
+def_import <- varImp(def_ranger)
+def_import
+plot(def_import)
 ```
 
 И, конечно, построить прогнозы:
@@ -425,7 +424,7 @@ modelLookup(model = 'ranger')
 Можно заказать количество перебираемых значений для каждого параметра:
 
 ```{r}
-ranger_model <- train(y ~ . - Class, data = educ_test,
+ranger_model <- train(y ~ ., data = educ_test,
                       method = "ranger",
                       na.action = na.omit,
                       importance = 'impurity',
@@ -437,7 +436,7 @@ ranger_model <- train(y ~ . - Class, data = educ_test,
 ```{r}
 grid <- expand.grid(mtry = c(5, 10), min.node.size = c(1, 5), splitrule = 'gini')
 
-ranger_model <- train(y ~ . - Class, data = educ_test,
+ranger_model <- train(y ~ ., data = educ_test,
             tuneGrid = grid, method = "ranger", na.action = na.omit)
 ranger_model
 ```
@@ -460,7 +459,7 @@ ranger_model
 trctrl <- trainControl(method = 'cv', number = 5)
 
 set.seed(777)
-educ_knn_fit <- train(y ~ ., data = educ_train, method = 'knn',
+educ_knn_fit <- train(y ~., data = educ_train, method = 'knn',
                       trControl = trctrl,
                       preProcess = c('center', 'scale'))
 
@@ -482,13 +481,13 @@ plot(educ_knn_fit, xlab = 'Число соседей',
 Затем визуализрйуте полученный результат.
 
 ```{r}
-# def_knn_fit <- train(___ ~ ., data = ___, method = '___',
-#                      trControl = trctrl,
-#                      preProcess = c('___', '___'))
+def_knn_fit <- train(default ~ ., data = def_train, method = 'knn',
+                     trControl = trctrl,
+                     preProcess = c('center', 'scale'))
 
-# plot(___, xlab = 'Число соседей',
-#      ylab = 'Доля правильных ответов',
-#      main = 'Метод k ближаших соседей')
+plot(def_knn_fit, xlab = 'Число соседей',
+     ylab = 'Доля правильных ответов',
+     main = 'Метод k ближаших соседей')
 ```
 
 
@@ -504,8 +503,8 @@ confusionMatrix(educ_knn_predict, educ_test$y)
 Постройте прогнозы метода k ближайших соседей для данных по кредитам и оцените их качество.
 
 ```{r}
-# def_knn_pred <- predict(___, newdata = ___)
-# confusionMatrix(___, ___$default)
+def_knn_pred <- predict(def_knn_fit, newdata = def_test)
+confusionMatrix(def_knn_pred, def_test$default)
 ```
 
 
@@ -544,7 +543,7 @@ plot(educ_lasso_fit, xlab = TeX('Доля $R^2$ от МНК'), ylab = 'RMSE', ma
 Постройте прогнозы для тестовой выборки.
 
 ```{r}
-# educ_lasso_pred <- predict(___, newdata = ___)
+educ_lasso_pred <- predict(educ_knn_fit, newdata = educ_test)
 ```
 
 
@@ -556,7 +555,7 @@ plot(educ_lasso_fit, xlab = TeX('Доля $R^2$ от МНК'), ylab = 'RMSE', ma
 Загрузим их и посмотрим описательные статистики.
 
 ```{r}
-protein <- import('Europenaprotein.csv')
+protein <- import('data/Europenaprotein.csv')
 skim(protein)
 ```
 
