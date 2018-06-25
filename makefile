@@ -25,6 +25,8 @@ archives/sem_060.zip: docs/seminar_060.Rmd docs/seminar_060_tex.Rmd data/pulse.t
 archives/sem_070.zip: docs/seminar_070.Rmd data/xAPI-Edu-Data.csv
 	zip -j archives/sem_070.zip docs/seminar_070.Rmd data/xAPI-Edu-Data.csv
 
+archives/sem_080.zip: docs/seminar_080.Rmd data/Europenaprotein.csv data/xAPI-Edu-Data.csv
+	zip -j archives/sem_080.zip docs/seminar_080.Rmd data/Europenaprotein.csv data/xAPI-Edu-Data.csv
 
 
 docs/seminar_010.html: docs/seminar_010.Rmd
