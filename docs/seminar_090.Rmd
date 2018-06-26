@@ -41,6 +41,9 @@ library(geojsonio) # чтение карт в формате geojson
 library(leaflet) # рисование динамических карт в html
 library(maptools) # утилиты для работы с картами
 library(rgeos) # пересчёт картографических проекций
+
+library(plm) # анализ панельных данных
+library(texreg) # таблички со сравнением моделей
 ```
 
 
@@ -393,5 +396,66 @@ base + coord_quickmap() + theme(legend.position = 'none')
 ```{r}
 # ___
 ```
+
+
+# Немного панельных данных
+
+Замечательная инструкция по анализу [панельных данных в R](https://cran.r-project.org/web/packages/plm/vignettes/plm.pdf).
+
+
+Активируем из спячки встроенный в пакет `plm` набор данных по предприятиям:
+
+```{r}
+data('Grunfeld', package='plm')
+skim(Grunfeld)
+glimpse(Grunfeld)
+```
+
+В панельных данных важно объявить переменные отвечающие за время и номер объекта:
+
+```{r}
+grun <- pdata.frame(Grunfeld, index=c('firm', 'year'))
+skim(grun)
+glimpse(grun)
+```
+
+Теперь можно оценивать FE модель :)
+
+```{r}
+grun_fe <- plm(inv ~ value + capital, data = Grunfeld, model = "within")
+summary(grun_fe)
+```
+
+И RE модель:
+
+```{r}
+grun_re <- plm(inv ~ value + capital, data = Grunfeld, model = "random")
+summary(grun_re)
+```
+
+Или в первых разностях:
+
+```{r}
+grun_fd <- plm(inv ~ value + capital, data = Grunfeld, model = "fd")
+summary(grun_fd)
+```
+
+Табличку со сравнением всех трёх моделей в студию:
+
+```{r, result='asis'}
+model_names <- c('RE-модель', 'FE-модель', 'FD-модель')
+htmlreg(list(grun_re, grun_fe, grun_fd), custom.model.names = model_names)
+```
+
+
+
+Тест Хаусмана на асимптотическое равенство RE и FE оценок:
+
+```{r}
+phtest(grun_re, grun_fe)
+```
+
+Нулевая гипотеза о том, что обе модели дают одинаковые оценки коэффициентов, не отвергается.
+Поэтому мы считаем, что обе модели состоятельны :)
 
 Ура-Ура-Ура :)
