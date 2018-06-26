@@ -1,6 +1,6 @@
 all: archives htmls
 
-archives: archives/sem_010.zip archives/sem_020.zip archives/sem_030.zip archives/sem_040.zip
+archives: archives/sem_010.zip archives/sem_020.zip archives/sem_030.zip archives/sem_040.zip archives/sem_050.zip archives/sem_060.zip archives/sem_070.zip archives/sem_080.zip archives/sem_090.zip
 htmls: docs/seminar_010.html docs/hw_010.html docs/seminar_020.html docs/seminar_030.html docs/seminar_040.html
 
 archives/sem_010.zip: docs/seminar_010.Rmd data/housing.wf1 data/housing.txt data/rus_utf8.csv data/rus_cp1251.csv data/cola.dta data/manipulate.sav data/cereal.csv docs/hw_010.Rmd
@@ -27,6 +27,10 @@ archives/sem_070.zip: docs/seminar_070.Rmd data/xAPI-Edu-Data.csv
 
 archives/sem_080.zip: docs/seminar_080.Rmd data/Europenaprotein.csv data/xAPI-Edu-Data.csv
 	zip -j archives/sem_080.zip docs/seminar_080.Rmd data/Europenaprotein.csv data/xAPI-Edu-Data.csv
+
+archives/sem_090.zip: docs/seminar_090.Rmd data/russia.geojson data/xAPI-Edu-Data.csv
+	zip -j archives/sem_090.zip docs/seminar_090.Rmd data/russia.geojson data/xAPI-Edu-Data.csv
+
 
 
 docs/seminar_010.html: docs/seminar_010.Rmd
@@ -72,6 +76,8 @@ docs/hw_010.html: docs/hw_010.Rmd
 	Rscript -e "rmarkdown::render('docs/hw_010_solutions.Rmd')"
 	-rm docs/cereal.csv
 
+
+# for future: it would be easier to copy whole data/ folder
 clean:
 	-rm docs/*.wf1
 	-rm docs/*.xlsx
