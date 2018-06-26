@@ -53,15 +53,18 @@ lang: ru-RU
     - Условия и данные [sem_080.zip](https://github.com/bdemeshev/r_intro_2/raw/master/archives/sem_080.zip);
     - [Решение семинара](http://bdemeshev.github.io/r_intro_2/seminar_080_solved.html);
 
-* Семинар 9, 28 июня. Разное и ответы на вопросы :)
+* Семинар 9, 28 июня. Карты и ответы на вопросы :)
 
+    - Условия и данные [sem_090.zip](https://github.com/bdemeshev/r_intro_2/raw/master/archives/sem_090.zip);
+<!--    - [Решение семинара](http://bdemeshev.github.io/r_intro_2/seminar_090_solved.html);
+-->
 
 #### Финальное домашнее задание
 
 * Часть первая — курс [Communicating with data in tidyverse](https://www.datacamp.com/courses/communicating-with-data-in-the-tidyverse) на datacamp.com (4 балла)
 * Часть вторая — краткий анализ любого набора данных, [минимальные требования](http://bdemeshev.github.io/r_intro_2/hw_final.html) (6 баллов)
 
-**Дедлайн**: 5 июля 23:59
+**Дедлайн**: 12 (!!!) июля 23:59
 
 
 Место: Шаболовка 26, 4428. Приносите свои ноутбуки!!!
