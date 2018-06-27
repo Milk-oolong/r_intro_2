@@ -219,7 +219,7 @@ plot(educ_lasso_fit,
 ## Динамичные
 
 Динамичные карты будем рисовать с помощью пакета `leaflet`.
-Для этого нам прежде всего понадобятся данные в хитром формате `russia.geojson`,
+Для этого нам прежде всего понадобятся данные для карты в хитром формате `.geojson`,
 которые мы взяли у [Code for America](https://github.com/codeforamerica/click_that_hood/tree/master/public/data).
 
 ```{r}
@@ -231,27 +231,80 @@ class(rus)
 
 ```{r}
 set.seed(777)
-rus@data <- mutate(rus@data, num = rnorm(n = 83, mean = 100, sd = 20))
+rus@data <- mutate(rus@data, num = rnorm(n = 83, mean = 100, sd = 30))
 ```
+
+Укажем цвет для каждого региона и подпись, которая будет появляться при наведении мышкой:
+```{r}
+pal <- colorNumeric('BuPu', NULL) # задаём палитру цветов
+
+rus@data <- mutate(rus@data, 
+          reg_color = pal(num),
+          reg_label = paste0(name, ': ', formatC(num), ' попугаев'))
+glimpse(rus@data)
+```
+
+- Что находится в переменных `reg_color` и `reg_label`?
 
 И теперь можно рисовать карту!
 Мы раскрасим все регионы России в зависимости от случайного числа `num`, добавим подпись при наведении курсора и легенду, а ещё попросим показывать не весь мир целиком, а только Россию.
 
 ```{r}
-pal <- colorNumeric('BuPu', NULL) # задаём палитру цветов
-
 rus %>%
   leaflet() %>%
   addTiles() %>% # инициализируем карту
-  addPolygons(stroke = FALSE, fillColor = ~pal(num), # раскрашиваем области
-              label = ~paste0(name, ': ', formatC(num))) %>% # добавляем подписи
-  addLegend(pal = pal, values = ~num) %>% # добавляем легенду
+  addPolygons(stroke = FALSE, fillColor = ~reg_color, # раскрашиваем области
+              label = ~reg_label) %>% # добавляем подписи
+  addLegend(pal = pal, values = ~num, title = 'Попугаи') %>% # добавляем легенду
   setView(lng = 100, lat = 66, zoom = 2) # просим показывать Россию
 ```
 
+
+Зоркий чукча, глядя на эту карту, обязательно скажет "Однако!"
+
+Проблема состоит в том, что Россия — одна из двух стран, пересекающих 180-ый меридиан. Примерно по 180-му меридиану проходит [линия перемены дат](http://ru.wikipedia.org/wiki/%D0%9C%D0%B5%D0%B6%D0%B4%D1%83%D0%BD%D0%B0%D1%80%D0%BE%D0%B4%D0%BD%D0%B0%D1%8F_%D0%BB%D0%B8%D0%BD%D0%B8%D1%8F_%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D1%8B_%D0%B4%D0%B0%D1%82). 
+Слева — "вчера", справа — "сегодня":
+
+![](http://upload.wikimedia.org/wikipedia/commons/c/c6/Diomede_Islands_Bering_Sea_Jul_2006.jpg)
+
+Левый остров — Ратманова (Россия), правый — Крузенштерна (США).
+
+
+Здесь нам пришлось вручную поправить скачанный `geojson`. 
+Технически Чукотка реализована в виде набора полигонов.
+Мы прибавили к отрицательным долготам некоторых полигонов 360 градусов:
+
+```{r}
+chukotka <- rus@polygons[[18]]
+for (i in 1:length(chukotka@Polygons)) {
+  polygon_long <- chukotka@Polygons[[i]]@coords[, 1]
+  if (mean(polygon_long) < 0) {
+    polygon_long <- 360 + polygon_long
+  }
+  chukotka@Polygons[[i]]@coords[, 1] <- polygon_long
+}
+
+rus_corrected <- rus
+rus_corrected@polygons[[18]] <- chukotka
+```
+
+И заново строим карту:
+
+```{r}
+rus_corrected %>%
+  leaflet() %>%
+  addTiles() %>% # инициализируем карту
+  addPolygons(stroke = FALSE, fillColor = ~reg_color, # раскрашиваем области
+              label = ~reg_label) %>% # добавляем подписи
+  addLegend(pal = pal, values = ~num, title = 'Попугаи') %>% # добавляем легенду
+  setView(lng = 100, lat = 66, zoom = 2) # просим показывать Россию
+```
+
+
 Сохранить карту в статичный `png` можно кликнув `Export` над картинкой в Rstudio.
 
-Данные с добавленными случайными числами можно сохранить командой `geojson_write()` из пакета `geojsonio`.
+Обновлённую карту со скорректированной Чукоткой и данными по попугаям 
+можно сохранить командой `geojson_write()` из пакета `geojsonio`.
 
 ```{r}
 geojson_write(rus, file = 'russia_new.geojson')
@@ -282,7 +335,17 @@ geojson_write(rus, file = 'russia_new.geojson')
 # new_data <- import(___)
 ```
 
-Подменяем старые данные внутри нашей карты отредактированными `new_data`:
+Добавьте в таблицу `new_data` код цвета и подпись для каждого региона:
+```{r}
+pal <- colorNumeric('BuPu', NULL) # задаём палитру цветов
+
+# new_data2 <- mutate(new_data, 
+#          ___ = pal(___),
+#          ___ = paste0(___, ': ', formatC(___)))
+```
+
+
+Подменяем старые данные внутри нашей карты отредактированными `new_data2`:
 
 ```{r}
 # rus@data <- ___
@@ -292,14 +355,12 @@ geojson_write(rus, file = 'russia_new.geojson')
 Добавьте легенду и подписи.
 
 ```{r}
-pal <- colorNumeric('BuPu', NULL) # задаём палитру цветов
-
 # rus %>%
 #   leaflet() %>%
 #   addTiles() %>% # инициализируем карту
-#   addPolygons(stroke = FALSE, fillColor = ~pal(___), # раскрашиваем области
-#               label = ~paste0(___, ': ', formatC(___))) %>% # добавляем подписи
-#   ___(pal = pal, values = ~num) %>% # добавляем легенду
+#   addPolygons(stroke = FALSE, fillColor = ~___, # раскрашиваем области
+#               label = ~___) %>% # добавляем подписи
+#   ___(pal = pal, values = ~num, title = '___') %>% # добавляем легенду
 #   ___(lng = 100, lat = 66, zoom = 2) # просим показывать Россию
 ```
 
@@ -442,9 +503,11 @@ summary(grun_fd)
 
 Табличку со сравнением всех трёх моделей в студию:
 
-```{r, result='asis'}
+```{r, results='asis'}
 model_names <- c('RE-модель', 'FE-модель', 'FD-модель')
-htmlreg(list(grun_re, grun_fe, grun_fd), custom.model.names = model_names)
+htmlreg(list(grun_re, grun_fe, grun_fd), 
+        custom.model.names = model_names, 
+        star.symbol = '\\*')
 ```
 
 
