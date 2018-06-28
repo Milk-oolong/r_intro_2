@@ -56,8 +56,8 @@ lang: ru-RU
 * Семинар 9, 28 июня. Карты и ответы на вопросы :)
 
     - Условия и данные [sem_090.zip](https://github.com/bdemeshev/r_intro_2/raw/master/archives/sem_090.zip);
-<!--    - [Решение семинара](http://bdemeshev.github.io/r_intro_2/seminar_090_solved.html);
--->
+    - [Решение семинара](http://bdemeshev.github.io/r_intro_2/seminar_090_solved.html);
+    
 
 #### Финальное домашнее задание
 

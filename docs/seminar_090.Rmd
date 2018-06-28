@@ -238,7 +238,7 @@ rus@data <- mutate(rus@data, num = rnorm(n = 83, mean = 100, sd = 30))
 ```{r}
 pal <- colorNumeric('BuPu', NULL) # задаём палитру цветов
 
-rus@data <- mutate(rus@data, 
+rus@data <- mutate(rus@data,
           reg_color = pal(num),
           reg_label = paste0(name, ': ', formatC(num), ' попугаев'))
 glimpse(rus@data)
@@ -262,7 +262,7 @@ rus %>%
 
 Зоркий чукча, глядя на эту карту, обязательно скажет "Однако!"
 
-Проблема состоит в том, что Россия — одна из двух стран, пересекающих 180-ый меридиан. Примерно по 180-му меридиану проходит [линия перемены дат](http://ru.wikipedia.org/wiki/%D0%9C%D0%B5%D0%B6%D0%B4%D1%83%D0%BD%D0%B0%D1%80%D0%BE%D0%B4%D0%BD%D0%B0%D1%8F_%D0%BB%D0%B8%D0%BD%D0%B8%D1%8F_%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D1%8B_%D0%B4%D0%B0%D1%82). 
+Проблема состоит в том, что Россия — одна из двух стран, пересекающих 180-ый меридиан. Примерно по 180-му меридиану проходит [линия перемены дат](http://ru.wikipedia.org/wiki/%D0%9C%D0%B5%D0%B6%D0%B4%D1%83%D0%BD%D0%B0%D1%80%D0%BE%D0%B4%D0%BD%D0%B0%D1%8F_%D0%BB%D0%B8%D0%BD%D0%B8%D1%8F_%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D1%8B_%D0%B4%D0%B0%D1%82).
 Слева — "вчера", справа — "сегодня":
 
 ![](http://upload.wikimedia.org/wikipedia/commons/c/c6/Diomede_Islands_Bering_Sea_Jul_2006.jpg)
@@ -270,7 +270,7 @@ rus %>%
 Левый остров — Ратманова (Россия), правый — Крузенштерна (США).
 
 
-Здесь нам пришлось вручную поправить скачанный `geojson`. 
+Здесь нам пришлось вручную поправить скачанный `geojson`.
 Технически Чукотка реализована в виде набора полигонов.
 Мы прибавили к отрицательным долготам некоторых полигонов 360 градусов:
 
@@ -303,7 +303,7 @@ rus_corrected %>%
 
 Сохранить карту в статичный `png` можно кликнув `Export` над картинкой в Rstudio.
 
-Обновлённую карту со скорректированной Чукоткой и данными по попугаям 
+Обновлённую карту со скорректированной Чукоткой и данными по попугаям
 можно сохранить командой `geojson_write()` из пакета `geojsonio`.
 
 ```{r}
@@ -316,10 +316,10 @@ geojson_write(rus, file = 'russia_new.geojson')
 
 * Упражнение 4.
 
-Отберите из старой таблички `rus@data` только содержательные колонки:
+Отберите из старой таблички `rus_corrected@data` только содержательные колонки:
 
 ```{r}
-# data_old <- rus@data %>% ___(name, num, cartodb_id)
+# data_old <- rus_corrected@data %>% ___(name, num, cartodb_id)
 # glimpse(data_old)
 ```
 
@@ -336,10 +336,11 @@ geojson_write(rus, file = 'russia_new.geojson')
 ```
 
 Добавьте в таблицу `new_data` код цвета и подпись для каждого региона:
+
 ```{r}
 pal <- colorNumeric('BuPu', NULL) # задаём палитру цветов
 
-# new_data2 <- mutate(new_data, 
+# new_data2 <- mutate(new_data,
 #          ___ = pal(___),
 #          ___ = paste0(___, ': ', formatC(___)))
 ```
@@ -348,14 +349,14 @@ pal <- colorNumeric('BuPu', NULL) # задаём палитру цветов
 Подменяем старые данные внутри нашей карты отредактированными `new_data2`:
 
 ```{r}
-# rus@data <- ___
+# rus_corrected@data <- ___
 ```
 
 И постройте карту России, раскрашенную по регионам в соответсвии с вашими данными.
 Добавьте легенду и подписи.
 
 ```{r}
-# rus %>%
+# rus_corrected %>%
 #   leaflet() %>%
 #   addTiles() %>% # инициализируем карту
 #   addPolygons(stroke = FALSE, fillColor = ~___, # раскрашиваем области
@@ -433,6 +434,7 @@ base + coord_quickmap()
 ```
 
 Убираем легенду полностью:
+
 ```{r}
 base + coord_quickmap() + theme(legend.position = 'none')
 ```
@@ -505,8 +507,8 @@ summary(grun_fd)
 
 ```{r, results='asis'}
 model_names <- c('RE-модель', 'FE-модель', 'FD-модель')
-htmlreg(list(grun_re, grun_fe, grun_fd), 
-        custom.model.names = model_names, 
+htmlreg(list(grun_re, grun_fe, grun_fd),
+        custom.model.names = model_names,
         star.symbol = '\\*')
 ```
 

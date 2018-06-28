@@ -1,0 +1,532 @@
+---
+title: 'Семинар 9. Карты, вопросы :)'
+date: 'Июнь, 28, 2018'
+output:
+  html_document:
+    keep_md: no
+    number_sections: yes
+    toc: yes
+lang: ru-RU
+editor_options:
+  chunk_output_type: console
+---
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+Новые пакеты этого семинара:
+* leaflet, units, geojsonio, maptools, rgeos
+
+* пакет со статичными данными для регионов России с гитхаба:
+```{r, eval=FALSE}
+devtools::install_github('akondrashov96/rusmaps')
+```
+
+
+```{r}
+library(tidyverse) # обработка данных, графики...
+library(skimr) # описательные статистики
+library(rio) # импорт фантастического количества форматов данных
+library(ISLR) # ещё данные
+library(caret) # пакет для подбора параметров разных моделей
+library(elasticnet) # LASSO
+library(latex2exp) # формулы в подписях к графику
+
+library(rusmaps) # подборка карт России
+library(geojsonio) # чтение карт в формате geojson
+library(leaflet) # рисование динамических карт в html
+library(maptools) # утилиты для работы с картами
+library(rgeos) # пересчёт картографических проекций
+
+library(plm) # анализ панельных данных
+library(texreg) # таблички со сравнением моделей
+```
+
+
+Снова импортируем набор данных по успеваемости студентов и смотрим на него :)
+
+```{r}
+educ <- import('data/xAPI-Edu-Data.csv')
+skim(educ)
+```
+
+Данные взяты с [kaggle.com](https://www.kaggle.com/aljarah/xAPI-Edu-Data/).
+Целевая переменная — успеваемость студента, `Class`, принимает три значения, 'H' (high), 'M' (mid), 'L' (low).
+Остальные переменные — характеристики студента.
+
+Повторяем шаги предыдущего семинара:
+
+1. Для целей бинарной классификации объединяем две верхних категории в одну
+2. Уберём старую переменную 'Class' с тремя категориями
+3. Объявляем все текстовые переменные факторными:
+
+```{r}
+educ_logit <- mutate(educ, y = fct_collapse(Class, H = c('M', 'H'))) %>%
+  select(-Class)
+educ_fct <- mutate_if(educ_logit, is.character, factor)
+```
+
+3. Разбиваем выборку на две части: 80% в обучающей и 20% в тестовой
+
+```{r}
+set.seed(777)
+train_rows <- createDataPartition(educ_fct$y, p = 0.8, list = FALSE)
+educ_train <- educ_fct[train_rows, ]
+educ_test <- educ_fct[-train_rows, ]
+```
+
+
+# Кросс-валидация для k ближайших соседей
+
+Метод классификации k-ближайших соседей реализует пословицу
+«Скажи мне, кто твой друг, и я скажу, кто ты».
+Мы прогнозируем класс нового наблюдения,
+как наиболее часто встречающийся класс у ближайших соседей данного наблюдения.
+
+
+Реализуем метод k ближайших соседей для набора данных про студентов.
+Подбирать число соседей будем с помощью кросс-валидации.
+Для этого у объекта `trainControl` зададим опции `method = 'cv'` и `number = 5`.
+Первая отвечает за тип кросс-валидации, а вторая за колиество разбиений выборки.
+В настройках обучения `train` укажем метод `knn`, добавим параметры кросс-валидции из объекта `trxrl`, а также попросим центрировать и отмасштабировать данные.
+
+```{r}
+trctrl <- trainControl(method = 'cv', number = 5)
+
+set.seed(777)
+educ_knn_fit <- train(y ~ ., data = educ_train, method = 'knn',
+                      trControl = trctrl,
+                      preProcess = c('center', 'scale'))
+
+educ_knn_fit
+```
+
+Визуализируем долю правильных ответов в зависимости от числа соседей.
+
+```{r}
+plot(educ_knn_fit, xlab = 'Число соседей',
+     ylab = 'Доля правильных ответов',
+     main = 'Метод k ближаших соседей')
+```
+
+
+Вспомним данные о кредитах :)
+
+```{r}
+def <- Default
+skim(def)
+```
+
+Разбиваем данные о кредитах на две части:
+
+```{r}
+set.seed(777)
+train_rows <- createDataPartition(def$default, p = 0.7, list = FALSE)
+def_train <- def[train_rows, ]
+def_test <- def[-train_rows, ]
+```
+
+
+* Упражнение 1.
+
+Реализуйте метод k ближайших соседей на данных о кредитах.
+Не забудьте центрировать и отмасштабировать их!
+Затем визуализируйте полученный результат.
+
+```{r}
+def_knn_fit <- train(default ~ ., data = def_train, method = 'knn',
+                     trControl = trctrl,
+                     preProcess = c('center', 'scale'))
+
+plot(def_knn_fit, xlab = 'Число соседей',
+     ylab = 'Доля правильных ответов',
+     main = 'Метод k ближаших соседей')
+```
+
+
+Теперь получим прогнозы для тестовой выборки и оценим их качество.
+
+```{r}
+educ_knn_predict <- predict(educ_knn_fit, newdata = educ_test)
+confusionMatrix(educ_knn_predict, educ_test$y)
+```
+
+* Упражнение 2.
+
+Постройте прогнозы метода k ближайших соседей для данных по кредитам и оцените их качество.
+
+```{r}
+def_knn_pred <- predict(def_knn_fit, newdata = def_test)
+confusionMatrix(def_knn_pred, def_test$default)
+```
+
+
+# Кросс-валидация для LASSO
+
+Вернёмся к построению линейной модели регрессии.
+
+Чтобы получить простую модель с хорошими предсказаниями,
+можно использовать LASSO-регрессию.
+От обычной она отличается тем,
+что в целевую функцию мы добавляем дополнительное слагаемое —
+сумму модулей всех коэффициентов кроме первого:
+\[
+Q = \sum_{i=1}^n (y_i - \hat y_i)^2 + \lambda \sum_{i=2}^k |\beta_i|,
+\]
+где $\sum_{i=1}^n (y_i - \hat y_i)^2$ — сумма квадратов остатков,
+$\lambda$ — параметр регуляризации.
+
+Добавляя сумму модулей коэффициентов, мы штрафуем модель за слишком большие веса.
+При значении параметра $\lambda = 0$ эта модель совпадает с обычным МНК,
+а при росте $\lambda$ всё большее число коэффициентов зануляется.
+
+Поcтроим LASSO-регрессию для данных о студентах.
+В качестве зависимой переменной возьмём количество раз, когда студент поднимал руку,
+а в качестве объясняющих — все остальные.
+В параметрах обучения укажем `method = 'lasso'` и зададим явно значения параметров, среди которых мы хотим найти наилучший, аргументом `tuneGrid`.
+
+```{r}
+the_grid <- expand.grid(.fraction = c(0.1, 0.2, 0.3, 0.5, 0.7))
+the_control <- trainControl(method = 'cv', number = 5)
+
+educ_lasso_fit <- train(raisedhands ~ ., data = educ_train,
+                        method = 'lasso', trControl = the_control,
+                        tuneGrid = the_grid)
+educ_lasso_fit
+```
+
+```{r}
+plot(educ_lasso_fit,
+  xlab = TeX('Доля $R^2$ от МНК'), ylab = 'RMSE',
+  main = 'LASSO регрессия')
+```
+
+* Упражнение 3.
+
+Постройте прогнозы для тестовой выборки.
+
+```{r}
+educ_lasso_pred <- predict(educ_lasso_fit, newdata = educ_test)
+```
+
+
+# Карты
+
+## Динамичные
+
+Динамичные карты будем рисовать с помощью пакета `leaflet`.
+Для этого нам прежде всего понадобятся данные для карты в хитром формате `.geojson`,
+которые мы взяли у [Code for America](https://github.com/codeforamerica/click_that_hood/tree/master/public/data).
+
+```{r}
+rus <- geojson_read('data/russia.geojson', what = 'sp')
+class(rus)
+```
+
+Добавим к каждому региону вектор из случайных чисел:
+
+```{r}
+set.seed(777)
+rus@data <- mutate(rus@data, num = rnorm(n = 83, mean = 100, sd = 30))
+```
+
+Укажем цвет для каждого региона и подпись, которая будет появляться при наведении мышкой:
+```{r}
+pal <- colorNumeric('BuPu', NULL) # задаём палитру цветов
+
+rus@data <- mutate(rus@data, 
+          reg_color = pal(num),
+          reg_label = paste0(name, ': ', formatC(num), ' попугаев'))
+glimpse(rus@data)
+```
+
+- Что находится в переменных `reg_color` и `reg_label`?
+
+И теперь можно рисовать карту!
+Мы раскрасим все регионы России в зависимости от случайного числа `num`, добавим подпись при наведении курсора и легенду, а ещё попросим показывать не весь мир целиком, а только Россию.
+
+```{r}
+rus %>%
+  leaflet() %>%
+  addTiles() %>% # инициализируем карту
+  addPolygons(stroke = FALSE, fillColor = ~reg_color, # раскрашиваем области
+              label = ~reg_label) %>% # добавляем подписи
+  addLegend(pal = pal, values = ~num, title = 'Попугаи') %>% # добавляем легенду
+  setView(lng = 100, lat = 66, zoom = 2) # просим показывать Россию
+```
+
+
+Зоркий чукча, глядя на эту карту, обязательно скажет "Однако!"
+
+Проблема состоит в том, что Россия — одна из двух стран, пересекающих 180-ый меридиан. Примерно по 180-му меридиану проходит [линия перемены дат](http://ru.wikipedia.org/wiki/%D0%9C%D0%B5%D0%B6%D0%B4%D1%83%D0%BD%D0%B0%D1%80%D0%BE%D0%B4%D0%BD%D0%B0%D1%8F_%D0%BB%D0%B8%D0%BD%D0%B8%D1%8F_%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D1%8B_%D0%B4%D0%B0%D1%82). 
+Слева — "вчера", справа — "сегодня":
+
+![](http://upload.wikimedia.org/wikipedia/commons/c/c6/Diomede_Islands_Bering_Sea_Jul_2006.jpg)
+
+Левый остров — Ратманова (Россия), правый — Крузенштерна (США).
+
+
+Здесь нам пришлось вручную поправить скачанный `geojson`. 
+Технически Чукотка реализована в виде набора полигонов.
+Мы прибавили к отрицательным долготам некоторых полигонов 360 градусов:
+
+```{r}
+chukotka <- rus@polygons[[18]]
+for (i in 1:length(chukotka@Polygons)) {
+  polygon_long <- chukotka@Polygons[[i]]@coords[, 1]
+  if (mean(polygon_long) < 0) {
+    polygon_long <- 360 + polygon_long
+  }
+  chukotka@Polygons[[i]]@coords[, 1] <- polygon_long
+}
+
+rus_corrected <- rus
+rus_corrected@polygons[[18]] <- chukotka
+```
+
+И заново строим карту:
+
+```{r}
+rus_corrected %>%
+  leaflet() %>%
+  addTiles() %>% # инициализируем карту
+  addPolygons(stroke = FALSE, fillColor = ~reg_color, # раскрашиваем области
+              label = ~reg_label) %>% # добавляем подписи
+  addLegend(pal = pal, values = ~num, title = 'Попугаи') %>% # добавляем легенду
+  setView(lng = 100, lat = 66, zoom = 2) # просим показывать Россию
+```
+
+
+Сохранить карту в статичный `png` можно кликнув `Export` над картинкой в Rstudio.
+
+Обновлённую карту со скорректированной Чукоткой и данными по попугаям 
+можно сохранить командой `geojson_write()` из пакета `geojsonio`.
+
+```{r}
+geojson_write(rus, file = 'russia_new.geojson')
+```
+
+Про динамичные карты можно прочитать подробнее в  [документации](https://rstudio.github.io/leaflet/),
+а попрактиковаться — на [datacamp](https://www.datacamp.com/courses/interactive-maps-with-leaflet-in-r).
+
+
+* Упражнение 4.
+
+Отберите из старой таблички `rus_corrected@data` только содержательные колонки:
+
+```{r}
+data_old <- rus_corrected@data %>% select(name, num, cartodb_id)
+glimpse(data_old)
+```
+
+Экспортируйте таблицу `data_old` c названиями регионов и их идентификаторами в формат `csv`:
+
+```{r}
+export(data_old, 'data_old.csv')
+```
+
+В экселе руками поменяйте столбец `num` и импортируйте эту таблицу обратно в R.
+
+```{r}
+new_data <- import('data_old_corrected.csv')
+```
+
+Добавьте в таблицу `new_data` код цвета и подпись для каждого региона:
+
+```{r}
+pal <- colorNumeric('BuPu', NULL) # задаём палитру цветов
+
+new_data2 <- mutate(new_data, 
+         reg_color = pal(num),
+         reg_label = paste0(name, ': ', formatC(num)))
+```
+
+
+Подменяем старые данные внутри нашей карты отредактированными `new_data2`:
+
+```{r}
+rus_corrected@data <- new_data2
+```
+
+И постройте карту России, раскрашенную по регионам в соответсвии с вашими данными.
+Добавьте легенду и подписи.
+
+```{r}
+rus_corrected %>%
+  leaflet() %>%
+  addTiles() %>% # инициализируем карту
+  addPolygons(stroke = FALSE, fillColor = ~reg_color, # раскрашиваем области
+              label = ~reg_label) %>% # добавляем подписи
+  addLegend(pal = pal, values = ~num, title = 'Попугаи') %>% # добавляем легенду
+  setView(lng = 100, lat = 66, zoom = 2) # просим показывать Россию
+```
+
+
+## Статические
+
+Куча готовых и очень подробных, даже слишком, карт по России в пакете Артёма Кондрашова [`rusmaps`](https://github.com/akondrashov96/rusmaps).
+К пакету есть [шикарная документация](https://github.com/akondrashov96/Tutorials-Scripts/raw/master/Visualisation_maps/Visualisation.pdf).
+
+Смотрим богатства пакета `rusmaps`.
+Cписок карт, которые содержит пакет, в студию:
+
+```{r}
+glimpse(rusmaps.dataframe)
+```
+
+Для просмотра таблицы с доступными картами внутри Rstudio можно
+набрать `View(rusmaps.dataframe)`.
+
+Карты хранятся в старом стандарте, который можно изображать сразу:
+
+```{r}
+plot(rus_fd)
+```
+
+Мы переведём карты в формат, удобный для рисовки с помощью `ggplot2`:
+
+Извлекаем числовые данные о регионах, встроенные в старую карту:
+
+```{r}
+info <- rus_fd@data
+glimpse(info)
+```
+
+- Какая информация встроена в карту `rus_fd` в слот `data`?
+- Как называется переменная с названием региона?
+
+Переводим старую карту в простую таблицу с потерей числовых данных:
+
+```{r}
+rus_nodata <- fortify(rus_fd, region = 'name')
+glimpse(rus_nodata)
+```
+
+- Какие данные содержатся в таблице `rus_nodata`?
+- Как называется переменная с названием региона?
+
+Подклеиваем данные к нашей карте:
+
+```{r}
+rus_final <- left_join(rus_nodata, info, by = c('id' = 'name'))
+glimpse(rus_final)
+```
+
+
+Базовый вариант карты России:
+
+```{r}
+base <- ggplot(rus_final) +
+  geom_polygon(aes(x = long, y = lat,
+              fill = pop_2016, group = group), color = 'white') +
+  labs(x = '', y = '', fill = 'Население 2016', title = 'Население России')
+base
+```
+
+Небольшое преобразование координат:
+
+```{r}
+base + coord_quickmap()
+```
+
+Убираем легенду полностью:
+
+```{r}
+base + coord_quickmap() + theme(legend.position = 'none')
+```
+
+* Упражнение 5.
+
+- Сохраните табличку `info` в формате `csv`
+
+```{r}
+export(info, 'info.csv')
+```
+
+- Добавьте в экселе к ней новый столбец с произвольными данными
+- Импотрируйте обновлённую табличку
+
+```{r}
+new_info <- import('info_new.csv') # создали стобец hop_2016
+rus_new <- left_join(rus_nodata, new_info, by = c('id' = 'name'))
+glimpse(rus_new)
+```
+
+- Постройте статичную карту России с обновлёнными данными
+
+```{r}
+new_base <- ggplot(rus_new) +
+  geom_polygon(aes(x = long, y = lat,
+              fill = hop_2016, group = group), color = 'white') + 
+  labs(x = '', y = '', fill = 'Какой-то показатель', title = 'Какой-то показатель по России')
+new_base
+```
+
+
+# Немного панельных данных
+
+Замечательная инструкция по анализу [панельных данных в R](https://cran.r-project.org/web/packages/plm/vignettes/plm.pdf).
+
+
+Активируем из спячки встроенный в пакет `plm` набор данных по предприятиям:
+
+```{r}
+data('Grunfeld', package='plm')
+skim(Grunfeld)
+glimpse(Grunfeld)
+```
+
+В панельных данных важно объявить переменные отвечающие за время и номер объекта:
+
+```{r}
+grun <- pdata.frame(Grunfeld, index=c('firm', 'year'))
+skim(grun)
+glimpse(grun)
+```
+
+Теперь можно оценивать FE модель :)
+
+```{r}
+grun_fe <- plm(inv ~ value + capital, data = Grunfeld, model = "within")
+summary(grun_fe)
+```
+
+И RE модель:
+
+```{r}
+grun_re <- plm(inv ~ value + capital, data = Grunfeld, model = "random")
+summary(grun_re)
+```
+
+Или в первых разностях:
+
+```{r}
+grun_fd <- plm(inv ~ value + capital, data = Grunfeld, model = "fd")
+summary(grun_fd)
+```
+
+Табличку со сравнением всех трёх моделей в студию:
+
+```{r, results='asis'}
+model_names <- c('RE-модель', 'FE-модель', 'FD-модель')
+htmlreg(list(grun_re, grun_fe, grun_fd), 
+        custom.model.names = model_names, 
+        star.symbol = '\\*')
+```
+
+
+
+Тест Хаусмана на асимптотическое равенство RE и FE оценок:
+
+```{r}
+phtest(grun_re, grun_fe)
+```
+
+Нулевая гипотеза о том, что обе модели дают одинаковые оценки коэффициентов, не отвергается.
+Поэтому мы считаем, что обе модели состоятельны :)
+
+Ура-Ура-Ура :)
