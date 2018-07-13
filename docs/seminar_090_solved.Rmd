@@ -452,9 +452,17 @@ export(info, 'info.csv')
 
 ```{r}
 new_info <- import('info_new.csv') # создали стобец hop_2016
+```
+
+
+- Подклейте импортированную табличку с данными к табличке с картой
+
+```{r}
 rus_new <- left_join(rus_nodata, new_info, by = c('id' = 'name'))
 glimpse(rus_new)
 ```
+
+
 
 - Постройте статичную карту России с обновлёнными данными
 
