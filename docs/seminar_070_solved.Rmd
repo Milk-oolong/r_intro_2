@@ -117,7 +117,7 @@ y_i^* = \beta_1 + \beta_2 x_i + \beta_3 z_i + u_i,
 Также модель можно записать в виде:
 
 \[
-\frac{\ln P(y_i = 1)}{\ln P(y_i = 0)} = \beta_1 + \beta_2 x_i + \beta_3 z_i
+\ln \frac{P(y_i = 1)}{P(y_i = 0)} = \beta_1 + \beta_2 x_i + \beta_3 z_i
 \]
 
 
