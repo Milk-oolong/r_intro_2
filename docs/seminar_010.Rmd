@@ -69,7 +69,7 @@ library(skimr)
 и на последние командой `tail()`.
 
 ```{r}
-some <- import('manipulate.sav')
+some <- import("manipulate.sav")
 glimpse(some)
 head(some)
 tail(some)
@@ -98,7 +98,7 @@ tail(some)
 
 ```{r}
 library(hexView) # подключаем специальный пакет для чтения данных eviews
-housing <- readEViews('housing.wf1')
+housing <- readEViews("housing.wf1")
 glimpse(housing)
 ```
 
@@ -131,7 +131,7 @@ qplot(data = df, x = carat)
 
 ```{r}
 qplot(data = df, x = carat) +
-  labs(x = 'Вес', y = 'Количество', title = 'Распределение бриллиантов по весу')
+  labs(x = "Вес", y = "Количество", title = "Распределение бриллиантов по весу")
 ```
 
 Потренируемся с качественными переменными и нарисуем гистограмму для качества
@@ -139,7 +139,7 @@ qplot(data = df, x = carat) +
 
 ```{r}
 qplot(data = df, x = cut)  +
-  labs(x = 'Качество огранка', y = 'Количество', title = 'Распределение бриллиантов по огранке')
+  labs(x = "Качество огранка", y = "Количество", title = "Распределение бриллиантов по огранке")
 ```
 
 C помощью `qplot` можно создавать и диаграммы рассеяния. Посмотрим сразу на
@@ -164,7 +164,7 @@ splom(df[1:1000, c(1, 5, 6)]) # строим диаграммы рассеяни
 
 ```{r}
 # qplot(data = ___, x = ___) +
-#  labs(x = ___, y = ___, title = ___)  
+#  labs(x = ___, y = ___, title = ___)
 ```
 
 Постройте диаграмму рассеяния: по оси абсцисс изобразите параметры
@@ -172,7 +172,7 @@ splom(df[1:1000, c(1, 5, 6)]) # строим диаграммы рассеяни
 
 ```{r}
 # qplot(data = ___, x = ___, y = ___) +
-#  labs(___)  
+#  labs(___)
 ```
 
 # Одним махом!
@@ -270,18 +270,18 @@ diamonds6
 
 Проверьте, читаются ли эти файлы командой `import()`
 ```{r}
-# data_utf <- import('rus_utf8.csv')
+# data_utf <- import("rus_utf8.csv")
 # glimpse(___)
-# data_cp <- import('rus_cp1251.csv')
+# data_cp <- import("rus_cp1251.csv")
 # glimpse(___)
 ```
 - В каком случае русские буквы читаются без кракозябр?
 
 Здесь на помощь приходят другие пакеты, например, функция `read_csv` из пакета `readr`:
 ```{r}
-# data_cp2 <- read_csv('rus_cp1251.csv', locale = locale(encoding = 'CP1251'))
+# data_cp2 <- read_csv("rus_cp1251.csv", locale = locale(encoding = "CP1251"))
 # glimpse(___)
-# data_utf2 <- read_csv('rus_utf8.csv', locale = locale(encoding = 'UTF8'))
+# data_utf2 <- read_csv("rus_utf8.csv", locale = locale(encoding = "UTF8"))
 # glimpse(___)
 ```
 
@@ -298,7 +298,7 @@ comma separated values.
 Экспортируем набор данных про бриллианты в `csv`:
 
 ```{r}
-export(diamonds, 'diamonds.csv')
+export(diamonds, "diamonds.csv")
 ```
 Теперь эти данные можно прочитать в большинстве программ!
 Ровно таким же образом можно экспортировать и в другие форматы:
@@ -323,7 +323,7 @@ export(diamonds, 'diamonds.csv')
 ```
 - Если хочется посмотреть, какие функции живут в пакете, например, в `skimr`:
 ```{r, eval=FALSE}
-help(package = 'skimr')
+help(package = "skimr")
 ```
 - Иногда помимо занудного описания каждой функции пакет содержит 'виньетки'.
 Виньетка - это пример использования пакета в бою.
@@ -331,11 +331,11 @@ help(package = 'skimr')
 
 Можно посмотреть, какие виньетки содержит пакет,
 ```{r, eval=FALSE}
-vignette(package = 'skimr')
+vignette(package = "skimr")
 ```
 А дальше, узнав название виньеток, прочитать любую из них, например,
 ```{r, eval=FALSE}
-vignette('Using_skimr')
+vignette("Using_skimr")
 ```
 
 - Если хочется посмотреть, какие пакеты используют люди моей специальности, то можно зайти на [cran task view](https://cran.r-project.org/web/views/)

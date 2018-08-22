@@ -57,7 +57,7 @@ library(estimatr) # модели с робастными ошибками
 
 Загружаем данные и объявляем переменные факторными:
 ```{r}
-pulse <- import('data/pulse.txt')
+pulse <- import("data/pulse.txt")
 pulse_fct <- pulse %>%
   mutate_at(vars(-Weight, -Height, -Age, -Pulse1, -Pulse2), factor)
 ```
@@ -275,22 +275,22 @@ R позволяет создавать документы в совершенн
 Начнём с нескольких таблиц.
 
 Составим по-быстрому табличку описательных статистик:
-```{r, results='asis'}
+```{r, results="asis"}
 skim_to_wide(diamonds) %>%
-  filter(type != 'factor') %>%
+  filter(type != "factor") %>%
   select(variable, complete, mean, sd, p0, p50, hist) %>%
   hux(add_colnames = TRUE) %>% print_html()
 ```
 
 Оформляем наши таблички симпатичнее:
-```{r, results='asis'}
+```{r, results="asis"}
 htmlreg(list(model_r, model_ur, model_r_rob, model_ur_rob),
         include.ci = FALSE,
-        star.symbol = '\\*')
+        star.symbol = "\\*")
 ```
 
 Вариант с доверительными интервалами:
-```{r, results='asis'}
+```{r, results="asis"}
 htmlreg(list(model_r, model_ur, model_r_rob, model_ur_rob), ci.force = TRUE)
 ```
 
@@ -300,7 +300,7 @@ htmlreg(list(model_r, model_ur, model_r_rob, model_ur_rob), ci.force = TRUE)
 ```{r, fig.width=3, fig.height=4}
 ggplot(data = pulse_fct, aes(x = Pulse1, y = Pulse2)) +
   geom_point() +
-  geom_smooth(method = 'lm') + labs(x = 'Пульс до (уд/мин)', y = 'Пульс после (уд/мин)')
+  geom_smooth(method = "lm") + labs(x = "Пульс до (уд/мин)", y = "Пульс после (уд/мин)")
 ```
 
 Для примера процитируем несколько источников,

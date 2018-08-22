@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 * пакет со статичными данными для регионов России с гитхаба:
 ```{r, eval=FALSE}
-devtools::install_github('akondrashov96/rusmaps')
+devtools::install_github("akondrashov96/rusmaps")
 ```
 
 
@@ -50,7 +50,7 @@ library(texreg) # таблички со сравнением моделей
 Снова импортируем набор данных по успеваемости студентов и смотрим на него :)
 
 ```{r}
-educ <- import('data/xAPI-Edu-Data.csv')
+educ <- import("data/xAPI-Edu-Data.csv")
 skim(educ)
 ```
 
@@ -65,7 +65,7 @@ skim(educ)
 3. Объявляем все текстовые переменные факторными:
 
 ```{r}
-educ_logit <- mutate(educ, y = fct_collapse(Class, H = c('M', 'H'))) %>%
+educ_logit <- mutate(educ, y = fct_collapse(Class, H = c("M", "H"))) %>%
   select(-Class)
 educ_fct <- mutate_if(educ_logit, is.character, factor)
 ```
@@ -90,17 +90,17 @@ educ_test <- educ_fct[-train_rows, ]
 
 Реализуем метод k ближайших соседей для набора данных про студентов.
 Подбирать число соседей будем с помощью кросс-валидации.
-Для этого у объекта `trainControl` зададим опции `method = 'cv'` и `number = 5`.
+Для этого у объекта `trainControl` зададим опции `method = "cv"` и `number = 5`.
 Первая отвечает за тип кросс-валидации, а вторая за колиество разбиений выборки.
 В настройках обучения `train` укажем метод `knn`, добавим параметры кросс-валидции из объекта `trxrl`, а также попросим центрировать и отмасштабировать данные.
 
 ```{r}
-trctrl <- trainControl(method = 'cv', number = 5)
+trctrl <- trainControl(method = "cv", number = 5)
 
 set.seed(777)
-educ_knn_fit <- train(y ~ ., data = educ_train, method = 'knn',
+educ_knn_fit <- train(y ~ ., data = educ_train, method = "knn",
                       trControl = trctrl,
-                      preProcess = c('center', 'scale'))
+                      preProcess = c("center", "scale"))
 
 educ_knn_fit
 ```
@@ -108,9 +108,9 @@ educ_knn_fit
 Визуализируем долю правильных ответов в зависимости от числа соседей.
 
 ```{r}
-plot(educ_knn_fit, xlab = 'Число соседей',
-     ylab = 'Доля правильных ответов',
-     main = 'Метод k ближаших соседей')
+plot(educ_knn_fit, xlab = "Число соседей",
+     ylab = "Доля правильных ответов",
+     main = "Метод k ближаших соседей")
 ```
 
 
@@ -138,13 +138,13 @@ def_test <- def[-train_rows, ]
 Затем визуализируйте полученный результат.
 
 ```{r}
-# def_knn_fit <- train(___ ~ ., data = ___, method = '___',
+# def_knn_fit <- train(___ ~ ., data = ___, method = "___",
 #                      trControl = trctrl,
-#                      preProcess = c('___', '___'))
+#                      preProcess = c("___", "___"))
 
-# plot(___, xlab = 'Число соседей',
-#      ylab = 'Доля правильных ответов',
-#      main = 'Метод k ближаших соседей')
+# plot(___, xlab = "Число соседей",
+#      ylab = "Доля правильных ответов",
+#      main = "Метод k ближаших соседей")
 ```
 
 
@@ -187,22 +187,22 @@ $\lambda$ — параметр регуляризации.
 Поcтроим LASSO-регрессию для данных о студентах.
 В качестве зависимой переменной возьмём количество раз, когда студент поднимал руку,
 а в качестве объясняющих — все остальные.
-В параметрах обучения укажем `method = 'lasso'` и зададим явно значения параметров, среди которых мы хотим найти наилучший, аргументом `tuneGrid`.
+В параметрах обучения укажем `method = "lasso"` и зададим явно значения параметров, среди которых мы хотим найти наилучший, аргументом `tuneGrid`.
 
 ```{r}
 the_grid <- expand.grid(.fraction = c(0.1, 0.2, 0.3, 0.5, 0.7))
-the_control <- trainControl(method = 'cv', number = 5)
+the_control <- trainControl(method = "cv", number = 5)
 
 educ_lasso_fit <- train(raisedhands ~ ., data = educ_train,
-                        method = 'lasso', trControl = the_control,
+                        method = "lasso", trControl = the_control,
                         tuneGrid = the_grid)
 educ_lasso_fit
 ```
 
 ```{r}
 plot(educ_lasso_fit,
-  xlab = TeX('Доля $R^2$ от МНК'), ylab = 'RMSE',
-  main = 'LASSO регрессия')
+  xlab = TeX("Доля $R^2$ от МНК"), ylab = "RMSE",
+  main = "LASSO регрессия")
 ```
 
 * Упражнение 3.
@@ -223,7 +223,7 @@ plot(educ_lasso_fit,
 которые мы взяли у [Code for America](https://github.com/codeforamerica/click_that_hood/tree/master/public/data).
 
 ```{r}
-rus <- geojson_read('data/russia.geojson', what = 'sp')
+rus <- geojson_read("data/russia.geojson", what = "sp")
 class(rus)
 ```
 
@@ -236,11 +236,11 @@ rus@data <- mutate(rus@data, num = rnorm(n = 83, mean = 100, sd = 30))
 
 Укажем цвет для каждого региона и подпись, которая будет появляться при наведении мышкой:
 ```{r}
-pal <- colorNumeric('BuPu', NULL) # задаём палитру цветов
+pal <- colorNumeric("BuPu", NULL) # задаём палитру цветов
 
 rus@data <- mutate(rus@data,
           reg_color = pal(num),
-          reg_label = paste0(name, ': ', formatC(num), ' попугаев'))
+          reg_label = paste0(name, ': ', formatC(num), " попугаев"))
 glimpse(rus@data)
 ```
 
@@ -255,7 +255,7 @@ rus %>%
   addTiles() %>% # инициализируем карту
   addPolygons(stroke = FALSE, fillColor = ~reg_color, # раскрашиваем области
               label = ~reg_label) %>% # добавляем подписи
-  addLegend(pal = pal, values = ~num, title = 'Попугаи') %>% # добавляем легенду
+  addLegend(pal = pal, values = ~num, title = "Попугаи") %>% # добавляем легенду
   setView(lng = 100, lat = 66, zoom = 2) # просим показывать Россию
 ```
 
@@ -296,7 +296,7 @@ rus_corrected %>%
   addTiles() %>% # инициализируем карту
   addPolygons(stroke = FALSE, fillColor = ~reg_color, # раскрашиваем области
               label = ~reg_label) %>% # добавляем подписи
-  addLegend(pal = pal, values = ~num, title = 'Попугаи') %>% # добавляем легенду
+  addLegend(pal = pal, values = ~num, title = "Попугаи") %>% # добавляем легенду
   setView(lng = 100, lat = 66, zoom = 2) # просим показывать Россию
 ```
 
@@ -307,7 +307,7 @@ rus_corrected %>%
 можно сохранить командой `geojson_write()` из пакета `geojsonio`.
 
 ```{r}
-geojson_write(rus, file = 'russia_new.geojson')
+geojson_write(rus, file = "russia_new.geojson")
 ```
 
 Про динамичные карты можно прочитать подробнее в  [документации](https://rstudio.github.io/leaflet/),
@@ -342,7 +342,7 @@ pal <- colorNumeric('BuPu', NULL) # задаём палитру цветов
 
 # new_data2 <- mutate(new_data,
 #          ___ = pal(___),
-#          ___ = paste0(___, ': ', formatC(___)))
+#          ___ = paste0(___, ": ", formatC(___)))
 ```
 
 
@@ -361,7 +361,7 @@ pal <- colorNumeric('BuPu', NULL) # задаём палитру цветов
 #   addTiles() %>% # инициализируем карту
 #   addPolygons(stroke = FALSE, fillColor = ~___, # раскрашиваем области
 #               label = ~___) %>% # добавляем подписи
-#   ___(pal = pal, values = ~num, title = '___') %>% # добавляем легенду
+#   ___(pal = pal, values = ~num, title = "___") %>% # добавляем легенду
 #   ___(lng = 100, lat = 66, zoom = 2) # просим показывать Россию
 ```
 
@@ -402,7 +402,7 @@ glimpse(info)
 Переводим старую карту в простую таблицу с потерей числовых данных:
 
 ```{r}
-rus_nodata <- fortify(rus_fd, region = 'name')
+rus_nodata <- fortify(rus_fd, region = "name")
 glimpse(rus_nodata)
 ```
 
@@ -412,7 +412,7 @@ glimpse(rus_nodata)
 Подклеиваем данные к нашей карте:
 
 ```{r}
-rus_final <- left_join(rus_nodata, info, by = c('id' = 'name'))
+rus_final <- left_join(rus_nodata, info, by = c("id" = "name"))
 glimpse(rus_final)
 ```
 
@@ -422,8 +422,8 @@ glimpse(rus_final)
 ```{r}
 base <- ggplot(rus_final) +
   geom_polygon(aes(x = long, y = lat,
-              fill = pop_2016, group = group), color = 'white') +
-  labs(x = '', y = '', fill = 'Население 2016', title = 'Население России')
+              fill = pop_2016, group = group), color = "white") +
+  labs(x = "", y = "", fill = "Население 2016", title = "Население России")
 base
 ```
 
@@ -436,7 +436,7 @@ base + coord_quickmap()
 Убираем легенду полностью:
 
 ```{r}
-base + coord_quickmap() + theme(legend.position = 'none')
+base + coord_quickmap() + theme(legend.position = "none")
 ```
 
 * Упражнение 5.
@@ -470,7 +470,7 @@ base + coord_quickmap() + theme(legend.position = 'none')
 
 Важно: Если мы подклеиваем данные с помощью `left_join`, то порядок следования регионов в таблице с числовыми данными
 для закраски регионов совершенно не важен.
-Но! Если мы хотим поместить числовые данные внутрь старого формата `SpatialPolygonsDataFrame`, то 
+Но! Если мы хотим поместить числовые данные внутрь старого формата `SpatialPolygonsDataFrame`, то
 регионы должны идти ровно в том порядке, в котором они шли до добавления числовых данных.
 
 # Немного панельных данных
@@ -481,7 +481,7 @@ base + coord_quickmap() + theme(legend.position = 'none')
 Активируем из спячки встроенный в пакет `plm` набор данных по предприятиям:
 
 ```{r}
-data('Grunfeld', package='plm')
+data("Grunfeld", package="plm")
 skim(Grunfeld)
 glimpse(Grunfeld)
 ```
@@ -489,7 +489,7 @@ glimpse(Grunfeld)
 В панельных данных важно объявить переменные отвечающие за время и номер объекта:
 
 ```{r}
-grun <- pdata.frame(Grunfeld, index=c('firm', 'year'))
+grun <- pdata.frame(Grunfeld, index=c("firm", "year"))
 skim(grun)
 glimpse(grun)
 ```
@@ -517,11 +517,11 @@ summary(grun_fd)
 
 Табличку со сравнением всех трёх моделей в студию:
 
-```{r, results='asis'}
-model_names <- c('RE-модель', 'FE-модель', 'FD-модель')
+```{r, results="asis"}
+model_names <- c("RE-модель", "FE-модель", "FD-модель")
 htmlreg(list(grun_re, grun_fe, grun_fd),
         custom.model.names = model_names,
-        star.symbol = '\\*')
+        star.symbol = "\\*")
 ```
 
 

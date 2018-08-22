@@ -40,7 +40,7 @@ library(ranger) # строим деревья
 Импортируем набор данных по успеваемости студентов и смотрим на него :)
 
 ```{r}
-educ <- import('xAPI-Edu-Data.csv')
+educ <- import("xAPI-Edu-Data.csv")
 skim(educ)
 ```
 
@@ -52,7 +52,7 @@ skim(educ)
 Для целей бинарной классификации объединяем две верхних категории в одну:
 
 ```{r}
-educ_logit <- mutate(educ, y = fct_collapse(Class, H = c('M', 'H')))
+educ_logit <- mutate(educ, y = fct_collapse(Class, H = c("M", "H")))
 ```
 
 И объявляем все текстовые переменные факторными:
@@ -122,11 +122,11 @@ y_i^* = \beta_1 + \beta_2 x_i + \beta_3 z_i + u_i,
 
 
 Реализуем логистическую регрессию с помощью функции `glm`.
-Передадим ей набор данных `educ_train`, формулу и укажем специалный аргумент `family = binomial(link = 'logit')`.
+Передадим ей набор данных `educ_train`, формулу и укажем специалный аргумент `family = binomial(link = "logit")`.
 Сохраним результаты оценивания в переменную `educ_lmodel` и посмотрим на них.
 
 ```{r}
-educ_lmodel_glm <- glm(data = educ_train, y ~ gender + SectionID + raisedhands, family = binomial(link = 'logit'))
+educ_lmodel_glm <- glm(data = educ_train, y ~ gender + SectionID + raisedhands, family = binomial(link = "logit"))
 summary(educ_lmodel_glm)
 ```
 
@@ -138,7 +138,7 @@ summary(educ_lmodel_glm)
 факторов в наборе данных `def`.
 
 ```{r}
-# def_lmodel_glm <- glm(data = ___, ___ ~ ., family = binomial(link = '___'))
+# def_lmodel_glm <- glm(data = ___, ___ ~ ., family = binomial(link = "___"))
 # summary(___)
 ```
 
@@ -160,7 +160,7 @@ summary(educ_margins)
 Ей нужно передать оценённую модель и указать переменные для визуализации в аргументе `terms`.
 
 ```{r, eval=FALSE}
-pred_educ_vis <- ggpredict(educ_lmodel_glm, terms = c('raisedhands', 'gender'))
+pred_educ_vis <- ggpredict(educ_lmodel_glm, terms = c("raisedhands", "gender"))
 pred_educ_vis <- plot(pred_educ_vis)
 ```
 
@@ -174,7 +174,7 @@ pred_educ_vis <- plot(pred_educ_vis)
 # def_margins <- margins(___)
 # summary(___)
 
-# pred_def_vis <- ggpredict(___, terms = c('___', '___'))
+# pred_def_vis <- ggpredict(___, terms = c("___", "___"))
 # plot(___)
 ```
 
@@ -183,7 +183,7 @@ pred_educ_vis <- plot(pred_educ_vis)
 Изменения минимальные:
 
 ```{r}
-educ_lmodel <- train(data = educ_train, y ~ gender + SectionID + raisedhands, family = binomial(link = 'logit'), method = 'glm')
+educ_lmodel <- train(data = educ_train, y ~ gender + SectionID + raisedhands, family = binomial(link = "logit"), method = "glm")
 summary(educ_lmodel)
 ```
 
@@ -193,7 +193,7 @@ summary(educ_lmodel)
 `caret`.
 
 ```{r}
-# def_lmodel <- train(data = ___, default ~ ___, family = binomial(link = 'logit'), method = '___')
+# def_lmodel <- train(data = ___, default ~ ___, family = binomial(link = "logit"), method = "___")
 # summary(___)
 ```
 
@@ -201,13 +201,13 @@ summary(educ_lmodel)
 Посторим прогнозы модели для тестовых данных `educ_test`.
 Для этого будем использовать функцию `predict`, которой передадим оценённую модель `educ_lmodel`.
 В переменной `educ_predz` уже будут лежать предсказанные классы.
-Чтобы получить их вероятности, нужно добавить аргумент `type = 'prob'`.
+Чтобы получить их вероятности, нужно добавить аргумент `type = "prob"`.
 
 ```{r}
 educ_pred <- predict(educ_lmodel, newdata = educ_test)
 head(educ_pred)
 
-educ_prob <- predict(educ_lmodel, newdata = educ_test, type = 'prob')
+educ_prob <- predict(educ_lmodel, newdata = educ_test, type = "prob")
 head(educ_prob)
 ```
 
@@ -345,7 +345,7 @@ ggplot(educ_test_set, aes(d = obs, m = L, color = gender)) +
 
 ```{r}
 tree_model <- train(y ~ . - Class, data = educ_test,
-                      method = 'rpart2',
+                      method = "rpart2",
                       na.action = na.omit)
 ```
 
@@ -366,7 +366,7 @@ summary(tree_model)
 Постройте дерево для набора данных `def`, визуализируйте результат и нарисуйте картинку.
 
 ```{r}
-# def_tree <- train(data = ___, default ~ ., method = '___')
+# def_tree <- train(data = ___, default ~ ., method = "___")
 # rpart.plot(___$finalModel)
 # summary(___)
 ```
@@ -403,7 +403,7 @@ confusionMatrix(educ_tree$yhat, educ_tree$y)
 Увы, пакет принимает на вход только 0/1 в зависимой переменной, поэтому заменим названия категорий на числа:
 
 ```{r}
-educ_train2 <- mutate(educ_train, ybin = ifelse(y == 'H', 1, 0)) %>%
+educ_train2 <- mutate(educ_train, ybin = ifelse(y == "H", 1, 0)) %>%
 select(-Class)
 ```
 
@@ -457,9 +457,9 @@ plot(fftree_model)
 
 ```{r}
 ranger_model <- train(y ~ . - Class, data = educ_test,
-                    method = 'ranger',
+                    method = "ranger",
                     na.action = na.omit,
-                    importance = 'impurity')
+                    importance = "impurity")
 ranger_model
 plot(ranger_model)
 ```
@@ -477,8 +477,8 @@ ranger_model$finalModel
 
 ```{r}
 # def_ranger <- train(___ ~ ., data = ___,
-#                     method = '___',
-#                     importance = 'impurity')
+#                     method = "___",
+#                     importance = "impurity")
 # def_ranger$___
 # plot(___)
 ```
@@ -518,7 +518,7 @@ confusionMatrix(educ_ranger$yhat, educ_ranger$y)
 Список перебираемых параметров:
 
 ```{r}
-modelLookup(model = 'ranger')
+modelLookup(model = "ranger")
 ```
 
 
@@ -530,14 +530,14 @@ modelLookup(model = 'ranger')
 ranger_model <- train(y ~ . - Class, data = educ_test,
                       method = "ranger",
                       na.action = na.omit,
-                      importance = 'impurity',
+                      importance = "impurity",
                       tuneLength = 4)
 ```
 
 Или явно значения
 
 ```{r}
-grid <- expand.grid(mtry = c(5, 10), min.node.size = c(1, 5), splitrule = 'gini')
+grid <- expand.grid(mtry = c(5, 10), min.node.size = c(1, 5), splitrule = "gini")
 
 ranger_model <- train(y ~ . - Class, data = educ_test,
             tuneGrid = grid, method = "ranger", na.action = na.omit)

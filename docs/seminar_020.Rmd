@@ -74,7 +74,7 @@ levels(diamonds$color)
 
 Попробуем объединить три категории в одну: "D", "E", "F" в "United":
 ```{r}
-diamonds2 <- mutate(diamonds, color = fct_collapse(color, United = c('D', 'E', 'F')))
+diamonds2 <- mutate(diamonds, color = fct_collapse(color, United = c("D", "E", "F")))
 table(diamonds2$color)
 ```
 
@@ -95,7 +95,7 @@ table(diamonds2$color)
 Загружаем и смотрим на них:
 
 ```{r}
-adult <- import('adult.rds') # загружаем данные
+adult <- import("adult.rds") # загружаем данные
 glimpse(adult)
 ```
 
@@ -132,15 +132,15 @@ table(adult2$sector, adult2$wage)
 
 
 ```{r}
-adult3 <- mutate(adult2, sector = fct_collapse(sector, Gov = c('State-gov', 'Federal-gov', 'Local-gov')))
-adult4 <- mutate(adult3, sector = fct_collapse(sector, Self_emp = c('Self-emp-not-inc', 'Self-emp-inc')))
+adult3 <- mutate(adult2, sector = fct_collapse(sector, Gov = c("State-gov", "Federal-gov", "Local-gov")))
+adult4 <- mutate(adult3, sector = fct_collapse(sector, Self_emp = c("Self-emp-not-inc", "Self-emp-inc")))
 skim(adult4)
 ```
 
 Строим более компактную таблицу сопряжённости:
 
 ```{r}
-ctable <- table(adult4$sector, adult4$wage, dnn = c('Сектор', 'Зарплата'))
+ctable <- table(adult4$sector, adult4$wage, dnn = c("Сектор", "Зарплата"))
 ctable
 ```
 
@@ -182,7 +182,7 @@ chisq.test(ctable)
 ```{r}
 dta <- Arthritis
 # ___
-# new_ctable <- table(___, ___, dnn = c('___', '___'))
+# new_ctable <- table(___, ___, dnn = c("___", "___"))
 # new_ctable
 # mosaic(___, shade = ___, ___ = ___)
 
@@ -227,7 +227,7 @@ cars_cor
 ```
 
 Если вдруг нужна корреляция не Пирсона, а Кендалла или Спирмена,
-добавьте аргумент `method = 'kendall'` или `method = 'spearman'`.
+добавьте аргумент `method = "kendall"` или `method = "spearman"`.
 
 Для визуализации корреляционной матрицы попробуем команду `corrplot()` из одноимённого пакета.
 Настраивать можно всё, что угодно,
@@ -237,8 +237,8 @@ cars_cor
 
 ```{r}
 corrplot(cars_cor) # график с аргументами по умолчанию
-corrplot(cars_cor, method = 'number') # график со значениями корреляции
-corrplot(cars_cor, method = 'color', type = 'upper') # только правая верхняя часть
+corrplot(cars_cor, method = "number") # график со значениями корреляции
+corrplot(cars_cor, method = "color", type = "upper") # только правая верхняя часть
 corrplot.mixed(cars_cor) # можно миксовать!
 ```
 
@@ -255,9 +255,9 @@ corrplot.mixed(cars_cor) # можно миксовать!
 
 ```{r}
 # skim(___)
-# cmatrix <- cor(___, use = 'pairwise.complete.obs') # игнорируем пропущенные значения
+# cmatrix <- cor(___, use = "pairwise.complete.obs") # игнорируем пропущенные значения
 # cmatrix
-# corrplot(___, method = '___', type = '___')
+# corrplot(___, method = "___", type = "___")
 ```
 
 # Группировка данных
@@ -320,14 +320,14 @@ report
 ```{r}
 ggplot(data = diamonds) +
   geom_point(aes(x = carat, y = price)) +
-  labs(x = 'Масса в каратах', y = 'Цена в долларах', title = 'Бриллианты. Много :)')
+  labs(x = "Масса в каратах", y = "Цена в долларах", title = "Бриллианты. Много :)")
 ```
 
 Задействуем эстетику цвета!
 ```{r}
 ggplot(data = diamonds) +
   geom_point(aes(x = carat, y = price, color = color)) +
-  labs(x = 'Масса в каратах', y = 'Цена в долларах', title = 'Бриллианты. Много :)')
+  labs(x = "Масса в каратах", y = "Цена в долларах", title = "Бриллианты. Много :)")
 ```
 
 Добавим новый слой вертикальных линий!
@@ -336,7 +336,7 @@ ggplot(data = diamonds) +
 ggplot(data = diamonds) +
   geom_point(aes(x = carat, y = price, color = color)) +
   geom_vline(aes(xintercept = mean(carat))) +
-  labs(x = 'Масса в каратах', y = 'Цена в долларах', title = 'Бриллианты. Много :)')
+  labs(x = "Масса в каратах", y = "Цена в долларах", title = "Бриллианты. Много :)")
 ```
 
 * Упражнение 9.
@@ -351,7 +351,7 @@ ggplot(data = diamonds) +
 ```{r}
 # ggplot(data = mtcars) +
 #  geom_point(aes(x = ___, ___ = disp, ___ = ___)) +
-#  labs(x = 'Пробег в милях на галлон', y = 'Объём двигателя')
+#  labs(x = "Пробег в милях на галлон", y = "Объём двигателя"")
 ```
 
 Добавьте к графику горизонтальную линию на уровне медианного объема двигателя
@@ -360,14 +360,14 @@ ggplot(data = diamonds) +
 # ggplot(data = mtcars) +
 #  geom_point(aes(x = ___, ___ = disp, ___ = ___)) +
 #  geom_hline(aes(yintercept = median(___)))
-#  labs(x = 'Пробег в милях на галлон', y = 'Объём двигателя')
+#  labs(x = "Пробег в милях на галлон", y = "Объём двигателя")
 ```
 
 Нарисуйте гистограмму пробега на одну милю `mpg`:
 ```{r}
 # ggplot(data = mtcars) +
 #  geom_histogram(aes(x = ___)) +
-#  labs(x = 'Пробег в милях на галлон', title = 'Няшный график :)')
+#  labs(x = "Пробег в милях на галлон", title = "Няшный график :)")
 ```
 
 
@@ -397,7 +397,7 @@ mtcars2 <- mutate(mtcars, cyl = factor(cyl))
 ```{r}
 ggplot(data = mtcars2) +
   geom_violin(aes(x = cyl, y = mpg)) +
-  labs(x = 'Цилиндры', y = 'Мощность', title = 'Машины')
+  labs(x = "Цилиндры", y = "Мощность", title = "Машины")
 ```
 
 С помощью функции `facet_grid()` можно разбить график на две панели:
@@ -407,7 +407,7 @@ ggplot(data = mtcars2) +
 ggplot(data = mtcars2) +
   geom_violin(aes(x = cyl, y = mpg)) +
   facet_grid(am ~ .) +
-  labs(x = 'Цилиндры', y = 'Мощность', title = 'Машины')
+  labs(x = "Цилиндры", y = "Мощность", title = "Машины")
 ```
 
 * Упражнение 10.

@@ -42,7 +42,7 @@ library(distances) # расчет различных расстояний
 Снова импортируем набор данных по успеваемости студентов и смотрим на него :)
 
 ```{r}
-educ <- import('xAPI-Edu-Data.csv')
+educ <- import("xAPI-Edu-Data.csv")
 skim(educ)
 ```
 
@@ -57,7 +57,7 @@ skim(educ)
 3. Объявляем все текстовые переменные факторными:
 
 ```{r}
-educ_logit <- mutate(educ, y = fct_collapse(Class, H = c('M', 'H'))) %>%
+educ_logit <- mutate(educ, y = fct_collapse(Class, H = c("M", "H"))) %>%
   select(-Class)
 educ_fct <- mutate_if(educ_logit, is.character, factor)
 ```
@@ -74,7 +74,7 @@ educ_fct <- mutate_if(educ_logit, is.character, factor)
 Создадим другую набор данных с альтернативной базовой категорией:
 
 ```{r}
-educ_fct_rel <- mutate(educ_fct, y = fct_relevel(y, 'L'))
+educ_fct_rel <- mutate(educ_fct, y = fct_relevel(y, "L"))
 ```
 
 3. Разбиваем выборку на две части: 80% в обучающей и 20% в тестовой
@@ -109,8 +109,8 @@ def <- Default
 
 ```{r}
 educ_lmodel <- train(data = educ_train,
-  y ~ gender + SectionID + raisedhands, family = binomial(link = 'logit'),
-  method = 'glm')
+  y ~ gender + SectionID + raisedhands, family = binomial(link = "logit"),
+  method = "glm")
 summary(educ_lmodel)
 ```
 
@@ -120,7 +120,7 @@ summary(educ_lmodel)
 `caret`.
 
 ```{r}
-# def_lmodel <- train(data = ___, default ~ ___, family = binomial(link = 'logit'), method = '___')
+# def_lmodel <- train(data = ___, default ~ ___, family = binomial(link = "logit"), method = "___")
 # summary(___)
 ```
 
@@ -128,13 +128,13 @@ summary(educ_lmodel)
 Посторим прогнозы модели для тестовых данных `educ_test`.
 Для этого будем использовать функцию `predict`, которой передадим оценённую модель `educ_lmodel`.
 В переменной `educ_predz` уже будут лежать предсказанные классы.
-Чтобы получить их вероятности, нужно добавить аргумент `type = 'prob'`.
+Чтобы получить их вероятности, нужно добавить аргумент `type = "prob"`.
 
 ```{r}
 educ_pred <- predict(educ_lmodel, newdata = educ_test)
 head(educ_pred)
 
-educ_prob <- predict(educ_lmodel, newdata = educ_test, type = 'prob')
+educ_prob <- predict(educ_lmodel, newdata = educ_test, type = "prob")
 head(educ_prob)
 ```
 
@@ -240,18 +240,18 @@ prSummary(educ_test_set, lev = levs) # нужен пакет MLmetrics
 ```{r}
 ggplot(educ_test_set, aes(d = obs, m = L)) +
   geom_roc(n.cuts = 0) +
-  labs(title = 'Кривая ROC',
-       x = 'False positive ratio = FP / (FP + TN)',
-       y = 'True positive ratio = TP / (TP + FN)')
+  labs(title = "Кривая ROC",
+       x = "False positive ratio = FP / (FP + TN)",
+       y = "True positive ratio = TP / (TP + FN)")
 
 educ_test_set <- mutate(educ_test_set, gender = educ_test$gender)
 
 ggplot(educ_test_set, aes(d = obs, m = L, color = gender)) +
   geom_roc(n.cuts = 0) +
-  labs(title = 'Кривые ROC в зависимости от пола',
-       x = 'False positive ratio = FP / (FP + TN)',
-       y = 'True positive ratio = TP / (TP + FN)',
-       color = 'Пол')
+  labs(title = "Кривые ROC в зависимости от пола",
+       x = "False positive ratio = FP / (FP + TN)",
+       y = "True positive ratio = TP / (TP + FN)",
+       color = "Пол")
 ```
 
 * Упражнение 6.
@@ -285,7 +285,7 @@ ggplot(educ_test_set, aes(d = obs, m = L, color = gender)) +
 Увы, пакет принимает на вход только 0/1 в зависимой переменной, поэтому заменим названия категорий на числа:
 
 ```{r}
-educ_train2 <- mutate(educ_train, ybin = ifelse(y == 'H', 1, 0))
+educ_train2 <- mutate(educ_train, ybin = ifelse(y == "H", 1, 0))
 ```
 
 И построим картинку для быстрого и стройного дерева:
@@ -338,15 +338,15 @@ plot(fftree_model)
 
 ```{r}
 ranger_model <- train(y ~ . - Class, data = educ_train,
-                      method = 'ranger',
+                      method = "ranger",
                       na.action = na.omit,
-                      importance = 'impurity')
+                      importance = "impurity")
 ranger_model
 plot(ranger_model,
-  xlab = 'Количество случайно отбираемых регрессоров',
-  ylab = 'Точность (бутстрэп оценка)',
-  main = 'Зависимость точности от настроек дерева',
-  auto.key = list(title = 'Алгоритм разбиения ветки', cex.title = 1))
+  xlab = "Количество случайно отбираемых регрессоров",
+  ylab = "Точность (бутстрэп оценка)",
+  main = "Зависимость точности от настроек дерева",
+  auto.key = list(title = "Алгоритм разбиения ветки", cex.title = 1))
 ```
 
 Как мы поняли, что за название легенды отвечает аргумент `auto.key`?
@@ -369,14 +369,14 @@ ranger_model$finalModel
 
 ```{r}
 # def_ranger <- train(___ ~ ., data = ___,
-#                     method = '___',
-#                     importance = 'impurity')
+#                     method = "___",
+#                     importance = "impurity")
 # def_ranger$___
 # plot(___,
-# xlab = 'Количество случайно отбираемых регрессоров',
-# ylab = 'Точность (бутстрэп оценка)',
-# main = 'Зависимость точности от настроек дерева',
-# auto.key = list(title = 'Алгоритм разбиения ветки', cex.title = 1))
+# xlab = "Количество случайно отбираемых регрессоров",
+# ylab = "Точность (бутстрэп оценка)",
+# main = "Зависимость точности от настроек дерева",
+# auto.key = list(title = "Алгоритм разбиения ветки", cex.title = 1))
 ```
 
 Построить информативно на графике все сотни или тысячи деревьев невозможно.
@@ -387,11 +387,9 @@ ranger_model$finalModel
 ranger_import <- varImp(ranger_model)
 ranger_import
 plot(ranger_import,
-    main = 'Важность переменных случайного леса',
-    xlab = 'Среднее падение индекса Джини')
+    main = "Важность переменных случайного леса",
+    xlab = "Среднее падение индекса Джини")
 ```
-
-TODO: или суммарное?
 
 * Упражнение 9.
 
@@ -416,7 +414,7 @@ confusionMatrix(educ_ranger$yhat, educ_ranger$y)
 Список перебираемых параметров:
 
 ```{r}
-modelLookup(model = 'ranger')
+modelLookup(model = "ranger")
 ```
 
 
@@ -428,14 +426,14 @@ modelLookup(model = 'ranger')
 ranger_model <- train(y ~ . - Class, data = educ_test,
                       method = "ranger",
                       na.action = na.omit,
-                      importance = 'impurity',
+                      importance = "impurity",
                       tuneLength = 4)
 ```
 
 Или явно значения
 
 ```{r}
-grid <- expand.grid(mtry = c(5, 10), min.node.size = c(1, 5), splitrule = 'gini')
+grid <- expand.grid(mtry = c(5, 10), min.node.size = c(1, 5), splitrule = "gini")
 
 ranger_model <- train(y ~ . - Class, data = educ_test,
             tuneGrid = grid, method = "ranger", na.action = na.omit)
@@ -452,17 +450,17 @@ ranger_model
 
 Реализуем метод k ближайших соседей для набора данных про студентов.
 Подбирать число соседей будем с помощью кросс-валидации.
-Для этого у объекта `trainControl` зададим опции `method = 'cv'` и `number = 5`.
+Для этого у объекта `trainControl` зададим опции `method = "cv"` и `number = 5`.
 Первая отвечает за тип кросс-валидации, а вторая за колиество разбиений выборки.
 В настройках обучения `train` укажем метод `knn`, добавим параметры кросс-валидции из объекта `trxrl`, а также попросим центрировать и отмасштабировать данные.
 
 ```{r}
-trctrl <- trainControl(method = 'cv', number = 5)
+trctrl <- trainControl(method = "cv", number = 5)
 
 set.seed(777)
-educ_knn_fit <- train(y ~ ., data = educ_train, method = 'knn',
+educ_knn_fit <- train(y ~ ., data = educ_train, method = "knn",
                       trControl = trctrl,
-                      preProcess = c('center', 'scale'))
+                      preProcess = c("center", "scale"))
 
 educ_knn_fit
 ```
@@ -470,9 +468,9 @@ educ_knn_fit
 Визуализируем долю правильных ответов в зависимости от числа соседей.
 
 ```{r}
-plot(educ_knn_fit, xlab = 'Число соседей',
-     ylab = 'Доля правильных ответов',
-     main = 'Метод k ближаших соседей')
+plot(educ_knn_fit, xlab = "Число соседей",
+     ylab = "Доля правильных ответов",
+     main = "Метод k ближаших соседей")
 ```
 
 * Упражнение 10.
@@ -482,13 +480,13 @@ plot(educ_knn_fit, xlab = 'Число соседей',
 Затем визуализрйуте полученный результат.
 
 ```{r}
-# def_knn_fit <- train(___ ~ ., data = ___, method = '___',
+# def_knn_fit <- train(___ ~ ., data = ___, method = "___",
 #                      trControl = trctrl,
-#                      preProcess = c('___', '___'))
+#                      preProcess = c("___", "___"))
 
-# plot(___, xlab = 'Число соседей',
-#      ylab = 'Доля правильных ответов',
-#      main = 'Метод k ближаших соседей')
+# plot(___, xlab = "Число соседей",
+#      ylab = "Доля правильных ответов",
+#      main = "Метод k ближаших соседей")
 ```
 
 
@@ -525,18 +523,18 @@ $\lambda$ — параметр регуляризации.
 Поcтроим LASSO-регрессию для данных о студентах.
 В качестве зависимой переменной возьмём количество раз, когда студент поднимал руку,
 а в качестве объясняющих — все остальные.
-В параметрах обучения укажем `method = 'lasso'` и зададим явно значения параметров, среди которых мы хотим найти наилучший, аргументом `tuneGrid`.
+В параметрах обучения укажем `method = "lasso"` и зададим явно значения параметров, среди которых мы хотим найти наилучший, аргументом `tuneGrid`.
 
 ```{r}
-trctrl <- trainControl(method = 'cv', number = 5)
+trctrl <- trainControl(method = "cv", number = 5)
 educ_lasso_fit <- train(raisedhands ~ ., data = educ_train,
-                        method = 'lasso', trControl = trctrl,
+                        method = "lasso", trControl = trctrl,
                         tuneGrid = expand.grid(.fraction = c(0.1, 0.2, 0.3, 0.5, 0.7)))
 educ_lasso_fit
 ```
 
 ```{r}
-plot(educ_lasso_fit, xlab = TeX('Доля $R^2$ от МНК'), ylab = 'RMSE', main = 'LASSO регрессия')
+plot(educ_lasso_fit, xlab = TeX("Доля $R^2$ от МНК"), ylab = "RMSE", main = "LASSO регрессия")
 ```
 
 * Упражнение 12.
@@ -556,7 +554,7 @@ plot(educ_lasso_fit, xlab = TeX('Доля $R^2$ от МНК'), ylab = 'RMSE', ma
 Загрузим их и посмотрим описательные статистики.
 
 ```{r}
-protein <- import('Europenaprotein.csv')
+protein <- import("Europenaprotein.csv")
 skim(protein)
 ```
 
@@ -566,7 +564,7 @@ skim(protein)
 ```{r}
 protein_no_country <- protein %>%
   mutate_if(is.numeric, ~ as.vector(scale(.))) %>%
-  column_to_rownames(var = 'Country')
+  column_to_rownames(var = "Country")
 ```
 
 Дополнение в виде функции `as.vector` нужно потому, что функция `scale` возвращает матрицу,

@@ -26,7 +26,7 @@ editor_options:
 
 Ставим пакет Томаса:
 ```{r, eval=FALSE}
-devtools::install_github('thomasp85/patchwork')
+devtools::install_github("thomasp85/patchwork")
 ```
 
 Как правило, разработчики интригующе описывают пакет прямо на гитхабе.
@@ -98,7 +98,7 @@ mean(a, na.rm = TRUE)
 Таблицы можно создавать самим c помощью функции `tibble()`.
 
 ```{r}
-mx <- tibble(ID = c('A', 'B', 'C', 'D', 'E'),
+mx <- tibble(ID = c("A", "B", "C", "D", "E"),
            x = c(1, 2, 4, 1, 8))
 mx
 ```
@@ -109,7 +109,7 @@ mx
 Столбец `y` можно заполнить числами произвольно.
 
 ```{r}
-# my <- tibble(ID = c('A', 'C', 'D', 'F', 'E'),
+# my <- tibble(ID = c("A", "B", "C", "D", "E"),
 #             y = c(___))
 # my
 ```
@@ -144,7 +144,7 @@ skim(my_tibble)
 Как правило в списках хранятся результаты оценивания сложных моделей.
 
 ```{r}
-my_list <- list(kreks = 'Привет!', peks = c(5, 6, NA), feks = diamonds)
+my_list <- list(kreks = "Привет!", peks = c(5, 6, NA), feks = diamonds)
 my_list$kreks
 my_list$peks
 attributes(my_list)
@@ -157,20 +157,20 @@ attributes(my_list)
 # Соединение таблиц
 
 Таблицы можно соединять! Существует четыре способа сделать это:
-- `left_join(x, y, by = 'colname')` сохраняет все наблюдения в таблице `x`
-- `right_join(x, y, by = 'colname')` сохраняет все наблюдения в таблице `y`
-- `full_join(x, y, by = 'colname')` сохраняет наблюдения из обеих таблиц
-- `inner_join(x, y, by = 'colname')` объединяет только те строки обеих таблиц, в которых нет пропущенных наблюдений
+- `left_join(x, y, by = "colname")` сохраняет все наблюдения в таблице `x`
+- `right_join(x, y, by = "colname")` сохраняет все наблюдения в таблице `y`
+- `full_join(x, y, by = "colname")` сохраняет наблюдения из обеих таблиц
+- `inner_join(x, y, by = "colname")` объединяет только те строки обеих таблиц, в которых нет пропущенных наблюдений
 
 * Упражнение 2.
 
 Экспериментируем!
 
 ```{r}
-# left_join(mx, my, by = 'ID')
-# right_join(mx, my, by = 'ID')
-# inner_join(mx, my, by = 'ID')
-# full_join(mx, my, by = 'ID')
+# left_join(mx, my, by = "ID")
+# right_join(mx, my, by = "ID")
+# inner_join(mx, my, by = "ID")
+# full_join(mx, my, by = "ID")
 ```
 
 - Сколько наблюдений получается в объединённой таблице в каждом случае?
@@ -190,7 +190,7 @@ attributes(my_list)
 - Сколько наблюдений в объединённой таблице?
 
 ```{r}
-# left <- left_join(___, ____, by = c('year', 'month', 'day', 'hour', 'origin'))
+# left <- left_join(___, ____, by = c("year", "month", "day", "hour", "origin"))
 # glimpse(___)
 ```
 
@@ -212,7 +212,7 @@ attributes(my_list)
 о ВВП по источникам доходов.
 
 ```{r}
-gdp <- import('gdp.xls')
+gdp <- import("gdp.xls")
 glimpse(gdp)
 gdp
 ```
@@ -231,7 +231,7 @@ gdp <- rename(gdp, indicator = X__1)
 Если столбец `indicator` нужно оставить как есть, упоминаем его с минусом!
 
 ```{r}
-long_gdp <- gather(gdp, key = 'date', value = 'quantity', -indicator)
+long_gdp <- gather(gdp, key = "date", value = "quantity", -indicator)
 glimpse(long_gdp)
 ```
 
@@ -245,7 +245,7 @@ diamonds_med
 
 А теперь превратим её в широкую:
 ```{r}
-diamonds_wide <- spread(diamonds_med, key = 'color', value = 'med_price')
+diamonds_wide <- spread(diamonds_med, key = "color", value = "med_price")
 diamonds_wide
 ```
 Здесь тупому компьютеру умный Homo Sapiens укажет:
@@ -262,7 +262,7 @@ diamonds_wide
 
 
 ```{r}
-# air_long <- gather(___, key = 'indicator', value = 'value', -Month, -___)
+# air_long <- gather(___, key = "indicator", value = "value", -Month, -___)
 # air_long
 ```
 
@@ -271,7 +271,7 @@ diamonds_wide
 А из получившейся длинной таблицы восстановите исходную!
 
 ```{r}
-# air_wide <- spread(___, key = '___', value = 'value')
+# air_wide <- spread(___, key = "___", value = "value")
 # air_wide
 ```
 
@@ -365,7 +365,7 @@ skim(typical_replaced)
 Сначала, как всегда, загрузим их и посмотрим описательные статистики.
 
 ```{r}
-protein <- import('Europenaprotein.csv')
+protein <- import("Europenaprotein.csv")
 skim(protein)
 ```
 
@@ -436,7 +436,7 @@ usa <- USArrests
 Сохраним результат этого действия в список `k_means_protein`.
 
 ```{r}
-protein_no_country <- protein_stand %>% column_to_rownames(var = 'Country')
+protein_no_country <- protein_stand %>% column_to_rownames(var = "Country")
 k_means_protein <- kmeans(protein_no_country, centers = 3)
 k_means_protein
 ```
@@ -485,7 +485,7 @@ tidy(k_means_protein)
 
 ```{r}
 fviz_cluster(object = k_means_protein, data = protein_no_country,
-             ellipse.type = 'convex')
+             ellipse.type = "convex")
 ```
 
 * Упражнение 11.
@@ -493,7 +493,7 @@ fviz_cluster(object = k_means_protein, data = protein_no_country,
 Визуализируйте результаты кластеризации данных по арестам `k_means_usa`.
 
 ```{r}
-# fviz_cluster(___, data = ___, ellipse.type = 'convex')
+# fviz_cluster(___, data = ___, ellipse.type = "convex")
 ```
 
 - Пересекаются ли кластеры?
@@ -505,16 +505,16 @@ fviz_cluster(object = k_means_protein, data = protein_no_country,
 
 
 ```{r}
-g1 <- fviz_nbclust(protein_no_country, kmeans, method = 'wss') +
-  labs(subtitle = 'Elbow method')
+g1 <- fviz_nbclust(protein_no_country, kmeans, method = "wss") +
+  labs(subtitle = "Elbow method")
 g1
 
-g2 <- fviz_nbclust(protein_no_country, kmeans, method = 'silhouette') +
-  labs(subtitle = 'Silhouette method')
+g2 <- fviz_nbclust(protein_no_country, kmeans, method = "silhouette") +
+  labs(subtitle = "Silhouette method")
 g2
 
-g3 <- fviz_nbclust(protein_no_country, kmeans, method = 'gap_stat') +
-  labs(subtitle = 'Gap statistic method')
+g3 <- fviz_nbclust(protein_no_country, kmeans, method = "gap_stat") +
+  labs(subtitle = "Gap statistic method")
 g3
 ```
 
@@ -537,12 +537,12 @@ g1 + (g2 / g3)
 Изобразите все три диаграммы вместе: первые две вместе наверху, вторую отеднльно внизу.
 
 ```{r}
-# p1 <- fviz_nbclust(___, kmeans, method = 'wss') +
-#  labs(subtitle = 'Elbow method')
-# p2 <- fviz_nbclust(___, ___, method = 'silhouette') +
-#  labs(subtitle = 'Silhouette method')
-# p3 <- fviz_nbclust(___, ___, method = 'gap_stat') +
-#  labs(subtitle = 'Gap statistic method')
+# p1 <- fviz_nbclust(___, kmeans, method = "wss") +
+#  labs(subtitle = "Elbow method")
+# p2 <- fviz_nbclust(___, ___, method = "silhouette") +
+#  labs(subtitle = "Silhouette method")
+# p3 <- fviz_nbclust(___, ___, method = "gap_stat") +
+#  labs(subtitle = "Gap statistic method")
 # (___ + ___) / ___
 ```
 
@@ -564,7 +564,7 @@ glimpse(protein_plus)
 О всех остальных опциях можно узнать в справке.
 
 ```{r}
-protein_dist <- dist(protein_no_country, method = 'euclidian')
+protein_dist <- dist(protein_no_country, method = "euclidian")
 ```
 
 Расстояния тоже можно визуализировать!
@@ -579,7 +579,7 @@ fviz_dist(protein_dist)
 Посчитайте матрицу расстояний для таблицы `usa_stand` и визуализируйте её.
 
 ```{r}
-# usa_dist <- dist(___, method = 'euclidian')
+# usa_dist <- dist(___, method = "euclidian")
 # fviz_dist(___)
 ```
 
@@ -623,14 +623,14 @@ glimpse(protein_plus2)
 ```
 
 Иерархичская кластеризация полезна и для визуализаций корреляций.
-Если в функции `corrplot()` из одноимённого пакета указать аргумента `order = hclust`,
+Если в функции `corrplot()` из одноимённого пакета указать аргумента `order = "hclust"`,
 то мы получим сгруппированные по кластерам переменные.
 Для красоты добавим ещё один аргумент — `addrect = 3`.
 Он обведёт прямоугольниками указанное число кластеров.
 
 ```{r}
 protein_cor <- cor(protein_no_country)
-corrplot(protein_cor, order = 'hclust', addrect = 3)
+corrplot(protein_cor, order = "hclust", addrect = 3)
 ```
 
 * Упражнение 15.

@@ -47,7 +47,7 @@ library(patchwork) # удобное расположение графиков р
 В наборе данных для каждой страны указано, сколько белка получает ежедневно житель из различных продуктов.
 
 ```{r}
-protein <- import('Europenaprotein.csv')
+protein <- import("Europenaprotein.csv")
 skim(protein)
 ```
 
@@ -57,7 +57,7 @@ skim(protein)
 ```{r}
 protein_no_country <- protein %>%
   mutate_if(is.numeric, ~ as.vector(scale(.))) %>%
-  column_to_rownames(var = 'Country')
+  column_to_rownames(var = "Country")
 ```
 
 Дополнение в виде функции `as.vector` нужно потому, что функция `scale` возвращает матрицу,
@@ -122,20 +122,20 @@ TSS = WSS + BSS
 
 
 ```{r}
-g1 <- fviz_nbclust(protein_no_country, kmeans, method = 'wss') +
-  labs(title = 'Зависимость WSS от числа кластеров',
-       subtitle = 'Метод: на глаз!', x = 'Число кластеров',
-       y = 'Внутригрупповая сумма квадратов расстояний')
+g1 <- fviz_nbclust(protein_no_country, kmeans, method = "wss") +
+  labs(title = "Зависимость WSS от числа кластеров",
+       subtitle = "Метод: на глаз!", x = "Число кластеров",
+       y = "Внутригрупповая сумма квадратов расстояний")
 g1
 ```
 
 
 ```{r}
-g2 <- fviz_nbclust(protein_no_country, kmeans, method = 'silhouette') +
-  labs(subtitle = 'Метод силуэтов',
-       title = 'Зависимость средней ширины силуэта от числа кластеров',
-       y = 'Средняя ширина силуэта по всем точкам',
-       x = 'Число кластеров')
+g2 <- fviz_nbclust(protein_no_country, kmeans, method = "silhouette") +
+  labs(subtitle = "Метод силуэтов",
+       title = "Зависимость средней ширины силуэта от числа кластеров",
+       y = "Средняя ширина силуэта по всем точкам",
+       x = "Число кластеров")
 g2
 ```
 
@@ -152,8 +152,8 @@ s_i = \frac{b_i - a_i}{\max\{a_i, b_i\}}
 
 
 ```{r}
-g3 <- fviz_nbclust(protein_no_country, kmeans, method = 'gap_stat') +
-  labs(subtitle = 'Gap statistic method')
+g3 <- fviz_nbclust(protein_no_country, kmeans, method = "gap_stat") +
+  labs(subtitle = "Gap statistic method")
 g3
 ```
 
@@ -194,7 +194,7 @@ Gap(k) + 1 \cdot se(Gap(k)) \geq Gap(k+1)
 О всех остальных опциях можно узнать в справке.
 
 ```{r}
-protein_dist <- dist(protein_no_country, method = 'euclidian')
+protein_dist <- dist(protein_no_country, method = "euclidian")
 ```
 
 Расстояния тоже можно визуализировать!
@@ -214,7 +214,7 @@ fviz_dist(protein_dist)
 
 ```{r}
 # usa <- USArrests
-# usa_dist <- dist(___, method = 'euclidian')
+# usa_dist <- dist(___, method = "euclidian")
 # fviz_dist(___)
 ```
 
@@ -225,7 +225,7 @@ fviz_dist(protein_dist)
 
 ```{r}
 protein_hcl <- hcut(protein_no_country, k = 4,
-                    hc_metric = 'euclidean', hc_method = 'ward.D2')
+                    hc_metric = "euclidean", hc_method = "ward.D2")
 ```
 
 Возможны бесчиленные вариации алгоритма!
@@ -277,14 +277,14 @@ glimpse(protein_plus2)
 ```
 
 Иерархичская кластеризация полезна и для визуализаций корреляций.
-Если в функции `corrplot()` из одноимённого пакета указать аргумента `order = hclust`,
+Если в функции `corrplot()` из одноимённого пакета указать аргумента `order = "hclust"`,
 то мы получим сгруппированные по кластерам переменные.
 Для красоты добавим ещё один аргумент — `addrect = 3`.
 Он обведёт прямоугольниками указанное число кластеров.
 
 ```{r}
 protein_cor <- cor(protein_no_country)
-corrplot(protein_cor, order = 'hclust', addrect = 3)
+corrplot(protein_cor, order = "hclust", addrect = 3)
 ```
 
 * Упражнение 3.
@@ -466,15 +466,15 @@ fviz_eig(protein_pca)
 
 Выясним, какой влкад вносит каждая переменная в конкретную главную компоненту.
 Для этого будем использовать команду `fviz_contrib()`.
-Передадим ей объект `protein_pca` и в качестве аргументов укажем `choice = 'var'`,
+Передадим ей объект `protein_pca` и в качестве аргументов укажем `choice = "var"`,
 так как нам нужны именно переменные, а не наблюдения, и `axes = 1`,
 чтобы посмотреть на первую главную компоненту.
 Для визуализации вклада наблюдения значение аргумента `choice` поменяем на `ind`
 и для разнообразия посмотрим на третью главную компоненту :)
 
 ```{r}
-fviz_contrib(protein_pca, choice = 'var', axes = 1)
-fviz_contrib(protein_pca, choice = 'ind', axes = 3)
+fviz_contrib(protein_pca, choice = "var", axes = 1)
+fviz_contrib(protein_pca, choice = "ind", axes = 3)
 ```
 
 - Какие переменные имеют наибольший вес в первой главной компоненте?
@@ -486,7 +486,7 @@ fviz_contrib(protein_pca, choice = 'ind', axes = 3)
 и вклад наблюдений в первую.
 
 ```{r}
-# fviz_contrib(___, choice = '___', axes = ___)
+# fviz_contrib(___, choice = "___", axes = ___)
 # fviz_contrib(___, choice = ___, ___ = ___)
 ```
 
@@ -496,7 +496,7 @@ fviz_contrib(protein_pca, choice = 'ind', axes = 3)
 ```{r}
 fviz_cluster(object = k_means_protein,
              data = protein_no_country,
-             ellipse.type = 'convex')
+             ellipse.type = "convex")
 ```
 
 Теперь мы понимаем, что на этом графике!
